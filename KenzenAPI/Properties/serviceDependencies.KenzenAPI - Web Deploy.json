@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/kenzenapidbserver/databases/KenzenAPI_db",
+      "type": "mssql.azure",
+      "connectionId": "CnxnString",
+      "secretStore": "AzureAppSettings"
+    },
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/kenzenstorage1",
+      "type": "storage.azure",
+      "connectionId": "PrimaryQueue",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
