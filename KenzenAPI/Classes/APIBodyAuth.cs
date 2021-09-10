@@ -1,4 +1,5 @@
-﻿using KenzenAPI.DataClasses;
+﻿using KenzenAPI.Classes.Lookup;
+using KenzenAPI.DataClasses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -47,8 +48,8 @@ namespace KenzenAPI
                 bool bAuth = false;
                 if (bOK)
                 {
-                    APIRole r = QuickCache.Roles.Find(q => q.Name.ToUpper() == this.Role.ToUpper());
-                    APIUserRole u = QuickCache.UserRoles.Find(q => q.UserID == UserID && q.RoleID == r.ID);
+                    Role r = QuickCache.Roles.Find(q => q.Name.ToUpper() == this.Role.ToUpper());
+                    UserRole u = QuickCache.UserRoles.Find(q => q.UserID == UserID && q.RoleID == r.ID);
                     if (u != null)
                         bAuth = true;
                 }

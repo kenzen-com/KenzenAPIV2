@@ -15,6 +15,7 @@ using Microsoft.Extensions.Azure;
 using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
+using KenzenAPI.Classes.Lookup;
 
 namespace KenzenAPI
 {
@@ -32,6 +33,7 @@ namespace KenzenAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddControllersWithViews();
             services.AddSingleton(Serilog.Log.Logger);
             services.AddAzureClients(builder =>
             {
@@ -60,8 +62,9 @@ namespace KenzenAPI
 
         public void LoadLists()
         {
-            QuickCache.Roles.AddRange(new APIRoleCollection(Serilog.Log.Logger, Configuration).Values.ToList());
-            QuickCache.UserRoles.AddRange(new APIUserRoleCollection(Serilog.Log.Logger, Configuration).Values.ToList());
+            Role r = new Role();
+            QuickCache.Roles.AddRange((List<Role>)r.FetchAll(Configuration).ObjectProcessed);
+            QuickCache.UserRoles.AddRange(new UserRoleCollection(Serilog.Log.Logger, Configuration).Values.ToList());
         }
     }
     internal static class StartupExtensions

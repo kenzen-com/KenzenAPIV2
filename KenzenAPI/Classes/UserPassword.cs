@@ -15,20 +15,20 @@ using AzureWrapper;
 namespace KenzenAPI.DataClasses
 {
 
-    public class APIUserPasswordCollection : Dictionary<int, APIUserPassword>
+    public class UserPasswordCollection : Dictionary<int, UserPassword>
     {
         public ILogger Logger;
         public IConfiguration Config;
 
         #region Constructors
-        public APIUserPasswordCollection(ILogger logger, IConfiguration config)
+        public UserPasswordCollection(ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
         }
 
 
-        public APIUserPasswordCollection(int ID, ILogger logger, IConfiguration config)
+        public UserPasswordCollection(int ID, ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
@@ -39,8 +39,8 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                APIUserPassword oAPIUserPassword = new APIUserPassword(Logger, Config);
-                SqlCommand cmd = new SqlCommand("SELECT * FROM [" + oAPIUserPassword.SchemaName + "].[" + oAPIUserPassword.TableName + "] WHERE UserID = @ID", Cnxn);
+                UserPassword oUserPassword = new UserPassword(Logger, Config);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM [" + oUserPassword.SchemaName + "].[" + oUserPassword.TableName + "] WHERE UserID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;
@@ -49,14 +49,14 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    oAPIUserPassword = new APIUserPassword(logger, config);
-                    oAPIUserPassword.CreatedDate = dr["CreatedDate"] == DBNull.Value ? "" : Convert.ToDateTime(dr["CreatedDate"]).ToUniversalTime().ToString("o").Trim();
-                    oAPIUserPassword.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
-                    oAPIUserPassword.IsCurrent = dr["IsCurrent"] == DBNull.Value ? false : Convert.ToBoolean(dr["IsCurrent"]);
-                    oAPIUserPassword.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    oAPIUserPassword.Password = dr["Password"] == DBNull.Value ? "" : dr["Password"].ToString().Trim();
-                    if (!this.ContainsKey(oAPIUserPassword.ID))
-                        this.Add(oAPIUserPassword.ID, oAPIUserPassword);
+                    oUserPassword = new UserPassword(logger, config);
+                    oUserPassword.UTC = dr["UTC"] == DBNull.Value ? "" : Convert.ToDateTime(dr["UTC"]).ToUniversalTime().ToString("o").Trim();
+                    oUserPassword.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
+                    oUserPassword.IsCurrent = dr["IsCurrent"] == DBNull.Value ? false : Convert.ToBoolean(dr["IsCurrent"]);
+                    oUserPassword.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oUserPassword.Password = dr["Password"] == DBNull.Value ? "" : dr["Password"].ToString().Trim();
+                    if (!this.ContainsKey(oUserPassword.ID))
+                        this.Add(oUserPassword.ID, oUserPassword);
                 }
 
                 dr.Close();
@@ -64,7 +64,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIUserPasswordCollectionConstructor", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordCollectionConstructor", Exc.Message, LogPath);
             }
             finally
             {
@@ -78,14 +78,14 @@ namespace KenzenAPI.DataClasses
 
 
 
-    public class APIUserPassword : DataClassBase
+    public class UserPassword : DataClassBase
     {
 
         #region Vars
 
         int _UserID;
 
-        string _CreatedDate;
+        string _UTC;
         bool _IsCurrent;
         string _Password;
 
@@ -98,10 +98,10 @@ namespace KenzenAPI.DataClasses
             get { return (_UserID); }
             set { _UserID = value; }
         }
-        public string CreatedDate
+        public string UTC
         {
-            get { return (Convert.ToDateTime(_CreatedDate).ToString("o")); }
-            set { _CreatedDate = value; }
+            get { return (Convert.ToDateTime(_UTC).ToString("o")); }
+            set { _UTC = value; }
         }
 
         public bool IsCurrent
@@ -120,15 +120,15 @@ namespace KenzenAPI.DataClasses
 
         #region Constructors
 
-        public APIUserPassword(ILogger logger, IConfiguration config)
+        public UserPassword(ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
-            TableName = "APIUserPasswords";
+            TableName = "UserPasswords";
 
         }
 
-        public APIUserPassword(int ID, ILogger logger, IConfiguration config) : this(logger, config)
+        public UserPassword(int ID, ILogger logger, IConfiguration config) : this(logger, config)
         {
             string CnxnString = Config["CnxnString"];
             string LogPath = Config["LogPath"];
@@ -147,7 +147,7 @@ namespace KenzenAPI.DataClasses
                 while (dr.Read())
                 {
 
-                    this.CreatedDate = dr["CreatedDate"] == DBNull.Value ? "" : Convert.ToDateTime(dr["CreatedDate"]).ToUniversalTime().ToString("o").Trim();
+                    this.UTC = dr["UTC"] == DBNull.Value ? "" : Convert.ToDateTime(dr["UTC"]).ToUniversalTime().ToString("o").Trim();
                     this.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                     this.IsCurrent = dr["IsCurrent"] == DBNull.Value ? false : Convert.ToBoolean(dr["IsCurrent"]);
                     this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
@@ -159,7 +159,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIUserPasswordConstructor", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordConstructor", Exc.Message, LogPath);
             }
             finally
             {
@@ -186,7 +186,7 @@ namespace KenzenAPI.DataClasses
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 #region Parameters
-                // parameters for APIUserPasswords
+                // parameters for UserPasswords
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
 
@@ -213,7 +213,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIUserPasswordSave", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordSave", Exc.Message, LogPath);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -250,7 +250,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIUserPasswordDelete", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordDelete", Exc.Message, LogPath);
                 return (false);
             }
             finally

@@ -17,6 +17,7 @@ using System.Text;
 namespace KenzenAPI.Controllers
 {
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(UserController))]
     [Route("[controller]")]
     public class UserController : Controller
     {
@@ -32,7 +33,7 @@ namespace KenzenAPI.Controllers
 
         #region Login
         /// <summary>
-        ///  Accepts a Login object as JSON | Returns an APIUser object
+        ///  Accepts a Login object as JSON | Returns an User object
         /// </summary>
         [HttpPost]
         [Route("Login")]
@@ -81,16 +82,10 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [Route("UpdatePassword")]
         [APIRouteAuth("User")]
-        public IActionResult UpdatePassword(HttpRequestMessage RJSON)
+        public IActionResult UpdatePassword(UserPassword oPW)
         {
-            int iUserID = 0;
             try
             {
-                string s = RJSON.Content.ReadAsStringAsync().Result;
-                JObject JSON = (JObject)JsonConvert.DeserializeObject(s);
-                APIUserPassword oPW = JSON.ToObject<APIUserPassword>();
-                iUserID = oPW.UserID;
-
                 ProcessResult oPR = oPW.Save();
                 if (oPR.Exception != null)
                     throw oPR.Exception;
@@ -108,22 +103,16 @@ namespace KenzenAPI.Controllers
 
         #region User
         /// <summary>
-        /// Accepts a APIUser object as JSON | Returns an ID
+        /// Accepts a User object as JSON | Returns an ID
         /// </summary>
         [HttpPost]
-        [Route("APIUser")]
+        [Route("User")]
         [APIBodyAuth("User")]
-        public IActionResult APIUser(HttpRequestMessage MJSON)
+        public IActionResult User(User oModel)
         {
-            int iID = -1;
             try
             {
-                string s = MJSON.Content.ReadAsStringAsync().Result;
-                JObject JSON = (JObject)JsonConvert.DeserializeObject(s);
-                APIUser oModel = JSON.ToObject<APIUser>();
-
                 ProcessResult oPR = oModel.Save();
-                iID = Convert.ToInt32(oPR.Result);
                 return Ok(oPR.Result);
             }
             catch (Exception e)
@@ -133,19 +122,18 @@ namespace KenzenAPI.Controllers
         }
         #endregion User
 
-        #region Users
+        #region User
         /// <summary>
-        ///  Accepts a UserID in the Route URL | Fetches a list of Users
+        ///  Accepts a UserID in the Route URL | Fetches a User
         /// </summary>
         [HttpGet]
-        [Route("Users")]
-
+        [Route("User/{UserID}")]
         [APIRouteAuth("User")]
-        public IActionResult APIUser(int UserID)
+        public IActionResult User(int UserID)
         {
             try
             {
-                APIUserCollection u = new APIUserCollection();
+                User u = new User(UserID, Logger, Config);
                 return Ok(u);
             }
             catch (Exception e)
@@ -160,14 +148,14 @@ namespace KenzenAPI.Controllers
         ///  Accepts a UserID in the Route URL | Fetches a list of UserRoles for the UserID in that Program(ID)
         /// </summary>
         [HttpGet]
-        [Route("UserRoles/{ClientID}")]
+        [Route("UserRoles/{ClientID}/{UserID}")]
 
         [APIRouteAuth("User")]
         public IActionResult UserRoles(int ClientID, int UserID)
         {
             try
             {
-                List<APIUserRole> u = (List<APIUserRole>)KenzenAPI.DataClasses.APIUser.FetchRoles(UserID, ClientID, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
+                List<UserRole> u = (List<UserRole>)KenzenAPI.DataClasses.User.FetchRoles(UserID, ClientID, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
                 return Ok(u);
             }
             catch (Exception e)
@@ -177,19 +165,45 @@ namespace KenzenAPI.Controllers
         }
         #endregion UserRoles
 
-        #region Roles
+        #region Heartrates
         /// <summary>
-        ///  Accepts a UserID in the Route URL | Fetches a list of Roles for the application
+        ///  Accepts a List of HeartRates as JSON
         /// </summary>
-        [HttpGet]
-        [Route("Roles")]
-
+        [HttpPost]
         [APIRouteAuth("User")]
-        public IActionResult Roles(int UserID)
+        [Route("Heartrates/{UserID}")]
+        public IActionResult Heartrates(List<HeartRate> l, int UserID)
         {
             try
             {
-                APIRoleCollection u = new APIRoleCollection(Logger, Config);
+                User u = new User(UserID, Logger, Config);
+                foreach (HeartRate r in l)
+                {
+                    ProcessResult oPR = r.Save(u.ClientID);
+                    if (oPR.Exception != null)
+                        throw oPR.Exception;
+                }
+
+                return Ok("Saved");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        ///  Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
+        /// </summary>
+        [HttpGet]
+        [Route("Heartrates/{UserID}")]
+        [APIRouteAuth("User")]
+        public IActionResult Heartrates()
+        {
+            try
+            {
+                HeartRateCollection u = new HeartRateCollection(Logger, Config);
                 return Ok(u);
             }
             catch (Exception e)
@@ -197,6 +211,6 @@ namespace KenzenAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        #endregion Roles
+        #endregion Heartrates
     }
 }

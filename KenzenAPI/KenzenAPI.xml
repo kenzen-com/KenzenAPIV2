@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KenzenAPI</name>
+    </assembly>
+    <members>
+        <member name="M:KenzenAPI.Controllers.SystemController.User">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a list of Users
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.Login(KenzenAPI.Classes.Models.Login)">
+            <summary>
+             Accepts a Login object as JSON | Returns an User object
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.UpdatePassword(System.Net.Http.HttpRequestMessage)">
+            <summary>
+             Accepts a UserID in the Route URL | Updates a User Password for the User ID in the JSON object
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.User(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Accepts a User object as JSON | Returns an ID
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.User(System.Int32)">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a User
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.UserRoles(System.Int32,System.Int32)">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a list of UserRoles for the UserID in that Program(ID)
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate})">
+            <summary>
+             Accepts a List of HeartRates as JSON
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.Heartrates">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
+            </summary>
+        </member>
+        <member name="T:KenzenAPI.Log">
+            <summary>
+            Logs errors, events
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Log.LogErr(System.String,System.String,System.String)">
+            <summary>
+            Due to firewall issues the email part of this function has two hardcoded email values 
+            Both mail (IP) server and destination email address must be changed by any new dev
+            </summary>
+            <param name="Source">The name of the function</param>
+            <param name="ErrMsg">The Exc.Message property</param>
+            <param name="LogPath">The application's log path</param>
+            <returns>false if log writing failed</returns>
+        </member>
+    </members>
+</doc>

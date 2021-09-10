@@ -1,4 +1,5 @@
-﻿using KenzenAPI.DataClasses;
+﻿using KenzenAPI.Classes.Lookup;
+using KenzenAPI.DataClasses;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
@@ -12,8 +13,9 @@ namespace KenzenAPI
     {
         public ILogger Logger;
         public IConfiguration Config;
-        public static List<APIRole> Roles = new List<APIRole>();
-        public static List<APIUserRole> UserRoles = new List<APIUserRole>();
+        public static List<Role> Roles = new List<Role>();
+        public static List<int> CustomClients = new List<int>();
+        public static List<UserRole> UserRoles = new List<UserRole>();
 
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace KenzenAPI
 {
-    [Serializable]
+
     public class ProcessResult
     {
         public Object ObjectProcessed;

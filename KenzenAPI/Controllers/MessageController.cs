@@ -2,10 +2,13 @@
 using AzureWrapper;
 using Serilog;
 using Microsoft.Extensions.Configuration;
+using KenzenAPI.Classes;
+using Newtonsoft.Json;
 
 namespace KenzenAPI.Controllers
 {
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(MessageController))]
     [Route("[controller]")]
     public class MessageController : Controller
     {
@@ -21,13 +24,16 @@ namespace KenzenAPI.Controllers
         {
             return Ok("hello");
         }
+        [APIBodyAuth("User")]
         [Route("Send")]
-        public IActionResult Send()
+        [HttpPost]
+        public IActionResult Send(Message M)
         {
             string sQ = "kenzen-message-queue";
             AzureWrapper.IO.QueueIO q = new AzureWrapper.IO.QueueIO(Config, Logger);
             q.CreateQueueClient(Cnxn);
-            AzureWrapper.ProcessResult p = q.Insert(Cnxn, sQ, "FromAPI").Result;
+            string sM = JsonConvert.SerializeObject(M);
+            AzureWrapper.ProcessResult p = q.Insert(Cnxn, sQ, sM).Result;
             if (p.Exception == null)
                 return Ok("sent");
             else

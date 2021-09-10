@@ -13,9 +13,9 @@ namespace KenzenAPI.Classes
     using System.Runtime.Serialization;
     using Serilog;
     using Microsoft.Extensions.Configuration;
+    using KenzenAPI.DataClasses;
     using AzureWrapper;
 
-    [Serializable]
     public class ClientCollection : Dictionary<int, Client>
     {
         public ILogger Logger;
@@ -29,7 +29,7 @@ namespace KenzenAPI.Classes
             Config = config;
 
             // fetch all from db
-            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(0, Config));
             try
             {
 
@@ -90,8 +90,8 @@ namespace KenzenAPI.Classes
     }
 
 
-    [Serializable]
-    public class Client
+
+    public class Client : DataClassBase
     {
 
         #region Vars
@@ -99,18 +99,18 @@ namespace KenzenAPI.Classes
         string _SchemaName;
         string _Name;
         string _APIKey;
-        string _LastEditDate;
+        string _LastEditUTC;
         string _Zip;
         string _Address;
         string _ContactPhone;
         int _ID;
-        string _CreatedDate;
+        string _UTC;
         int _LastEditBy;
         string _State;
         string _City;
         string _ContactName;
         string _ContactEmail;
-        bool _IsPIA;
+        bool _IsEncrypted;
 
         #endregion Vars
 
@@ -134,10 +134,10 @@ namespace KenzenAPI.Classes
             set { _APIKey = value; }
         }
 
-        public string LastEditDate
+        public string LastEditUTC
         {
-            get { return (_LastEditDate); }
-            set { _LastEditDate = value; }
+            get { return (_LastEditUTC); }
+            set { _LastEditUTC = value; }
         }
 
         public string Zip
@@ -164,10 +164,10 @@ namespace KenzenAPI.Classes
             set { _ID = value; }
         }
 
-        public string CreatedDate
+        public string UTC
         {
-            get { return (_CreatedDate); }
-            set { _CreatedDate = value; }
+            get { return (_UTC); }
+            set { _UTC = value; }
         }
 
         public int LastEditBy
@@ -200,7 +200,7 @@ namespace KenzenAPI.Classes
             set { _ContactEmail = value; }
         }
 
-        public bool IsPIA { get => _IsPIA; set => _IsPIA = value; }
+        public bool IsEncrypted { get => _IsEncrypted; set => _IsEncrypted = value; }
 
         #endregion Get/Sets
 
@@ -211,12 +211,16 @@ namespace KenzenAPI.Classes
         {
             Logger = logger;
             Config = config;
+            TableName = "Clients";
+
         }
 
         public Client(int ClientID, ILogger logger, IConfiguration config) : this(logger, config)
         {
             // fill props from db
-            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            if (!QuickCache.CustomClients.Contains(ClientID))
+                Cnxn = new SqlConnection(Config["CnxnString" + ClientID]);
             try
             {
 
@@ -228,8 +232,7 @@ namespace KenzenAPI.Classes
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
-              
-
+                FillProps(dr);
                 dr.Close();
                 Cnxn.Close();
             }
@@ -260,7 +263,7 @@ namespace KenzenAPI.Classes
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 #region Parameters
-                // parameters for tblClients
+                // parameters for Clients
                 cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 50));
                 cmd.Parameters["@Address"].Value = this.Address ?? "";
 
@@ -270,8 +273,8 @@ namespace KenzenAPI.Classes
                 cmd.Parameters.Add(new SqlParameter("@LastEditBy", SqlDbType.Int));
                 cmd.Parameters["@LastEditBy"].Value = this.LastEditBy;
 
-                cmd.Parameters.Add(new SqlParameter("@IsPIA", SqlDbType.Bit));
-                cmd.Parameters["@IsPIA"].Value = this.IsPIA;
+                cmd.Parameters.Add(new SqlParameter("@IsEncrypted", SqlDbType.Bit));
+                cmd.Parameters["@IsEncrypted"].Value = this.IsEncrypted;
 
                 cmd.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 50));
                 cmd.Parameters["@Name"].Value = this.Name ?? "";
@@ -291,8 +294,8 @@ namespace KenzenAPI.Classes
                 cmd.Parameters.Add(new SqlParameter("@ContactName", SqlDbType.VarChar, 50));
                 cmd.Parameters["@ContactName"].Value = this.ContactName ?? "";
 
-                cmd.Parameters.Add(new SqlParameter("@LastEditDate", SqlDbType.VarChar, 50));
-                cmd.Parameters["@LastEditDate"].Value = DateTime.Now;
+                cmd.Parameters.Add(new SqlParameter("@LastEditUTC", SqlDbType.VarChar, 50));
+                cmd.Parameters["@LastEditUTC"].Value = DateTime.Now;
 
                 cmd.Parameters.Add(new SqlParameter("@APIKey", SqlDbType.VarChar, 100));
                 cmd.Parameters["@APIKey"].Value = this.APIKey ?? "";
@@ -308,7 +311,7 @@ namespace KenzenAPI.Classes
                 cmd.Parameters["@ClientIDOut"].Direction = ParameterDirection.Output;
 
                 #endregion Parameters
-                if (this.IsPIA)
+                if (this.IsEncrypted)
                 {
                     foreach (SqlParameter p in cmd.Parameters)
                     {
@@ -344,11 +347,12 @@ namespace KenzenAPI.Classes
         }
         #endregion Save
 
+        #region FillProps
         public void FillProps(SqlDataReader dr)
         {
             while (dr.Read())
             {
-                if (!this.IsPIA)
+                if (!this.IsEncrypted)
                 {
                     this.Address = dr["Address"] == DBNull.Value ? "" : dr["Address"].ToString().Trim();
                     this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
@@ -359,12 +363,12 @@ namespace KenzenAPI.Classes
                     this.ContactPhone = dr["ContactPhone"] == DBNull.Value ? "" : dr["ContactPhone"].ToString().Trim();
                     this.ContactEmail = dr["ContactEmail"] == DBNull.Value ? "" : dr["ContactEmail"].ToString().Trim();
                     this.ContactName = dr["ContactName"] == DBNull.Value ? "" : dr["ContactName"].ToString().Trim();
-                    this.LastEditDate = dr["LastEditDate"] == DBNull.Value ? "" : dr["LastEditDate"].ToString().Trim();
-                    this.CreatedDate = dr["CreatedDate"] == DBNull.Value ? "" : dr["CreatedDate"].ToString().Trim();
+                    this.LastEditUTC = dr["LastEditUTC"] == DBNull.Value ? "" : dr["LastEditUTC"].ToString().Trim();
+                    this.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
                     this.APIKey = dr["APIKey"] == DBNull.Value ? "" : dr["APIKey"].ToString().Trim();
                     this.Zip = dr["Zip"] == DBNull.Value ? "" : dr["Zip"].ToString().Trim();
                     this.SchemaName = dr["SchemaName"] == DBNull.Value ? "" : dr["SchemaName"].ToString().Trim();
-                    this.IsPIA = dr["IsPIA"] == DBNull.Value ? false : true;
+                    this.IsEncrypted = dr["IsEncrypted"] == DBNull.Value ? false : true;
                 }
                 else
                 {
@@ -375,24 +379,25 @@ namespace KenzenAPI.Classes
                     this.ContactPhone = dr["ContactPhone"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["ContactPhone"].ToString().Trim(), Config["LogPath"]);
                     this.ContactEmail = dr["ContactEmail"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["ContactEmail"].ToString().Trim(), Config["LogPath"]);
                     this.ContactName = dr["ContactName"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["ContactName"].ToString().Trim(), Config["LogPath"]);
-                    this.LastEditDate = dr["LastEditDate"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["LastEditDate"].ToString().Trim(), Config["LogPath"]);
-                    this.CreatedDate = dr["CreatedDate"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["CreatedDate"].ToString().Trim(), Config["LogPath"]);
+                    this.LastEditUTC = dr["LastEditUTC"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["LastEditUTC"].ToString().Trim(), Config["LogPath"]);
+                    this.UTC = dr["UTC"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["UTC"].ToString().Trim(), Config["LogPath"]);
                     this.APIKey = dr["APIKey"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["APIKey"].ToString().Trim(), Config["LogPath"]);
                     this.Zip = dr["Zip"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["Zip"].ToString().Trim(), Config["LogPath"]);
                     this.SchemaName = dr["SchemaName"] == DBNull.Value ? "" : Crypto.DecryptValue(dr["SchemaName"].ToString().Trim(), Config["LogPath"]);
-                    this.IsPIA = dr["IsPIA"] == DBNull.Value ? false : true;
+                    this.IsEncrypted = dr["IsEncrypted"] == DBNull.Value ? false : true;
                     this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
                     this.LastEditBy = dr["LastEditBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["LastEditBy"]);
                 }
             }
         }
+        #endregion FillProps
 
         #region Delete
 
 
         public bool Delete()
         {
-            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
@@ -422,6 +427,72 @@ namespace KenzenAPI.Classes
         }
         #endregion Delete
 
+        public static ProcessResult Users(int ClientID, ILogger Logger, IConfiguration Config)
+        {
+            ProcessResult oPR = new ProcessResult();
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(0, Config));
+            try
+            {
+                List<User> oOut = new List<User>();
+
+                User oUser = new User(Logger, Config);
+                SqlCommand cmd = new SqlCommand("spUsersFetchByClient", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ClientID", SqlDbType.Int).Value = ClientID;
+
+                Cnxn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    oUser = new User(Logger, Config);
+                    oUser.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : dr["DateOfBirth"].ToString().Trim();
+                    oUser.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oUser.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    oUser.Username = dr["Username"] == DBNull.Value ? "" : dr["Username"].ToString().Trim();
+                    oUser.LastLoginUTC = dr["LastLoginUTC"] == DBNull.Value ? "" : dr["LastLoginUTC"].ToString().Trim();
+                    oUser.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
+                    oUser.CountryOfResidence = dr["CountryOfResidence"] == DBNull.Value ? "" : dr["CountryOfResidence"].ToString().Trim();
+                    oUser.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+                    oUser.EmailAddress = dr["EmailAddress"] == DBNull.Value ? "" : dr["EmailAddress"].ToString().Trim();
+                    oUser.LastName = dr["LastName"] == DBNull.Value ? "" : dr["LastName"].ToString().Trim();
+                    oUser.FirstName = dr["FirstName"] == DBNull.Value ? "" : dr["FirstName"].ToString().Trim();
+                    oUser.Vest = dr["Vest"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Vest"]);
+                    oUser.Measure = dr["Measure"] == DBNull.Value ? "" : dr["Measure"].ToString().Trim();
+                    oUser.WorkDayLength = dr["WorkDayLength"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WorkDayLength"]);
+                    oUser.Height = dr["Height"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Height"]);
+                    oUser.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
+                    oUser.Gender = dr["Gender"] == DBNull.Value ? "" : dr["Gender"].ToString().Trim();
+                    oUser.Weight = dr["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Weight"]);
+                    oUser.WorkDayStart = dr["WorkDayStart"] == DBNull.Value ? "" : dr["WorkDayStart"].ToString().Trim();
+                    oUser.Platform = dr["Platform"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Platform"]);
+                    oUser.LastUpdatedUTC = dr["LastUpdatedUTC"] == DBNull.Value ? "" : dr["LastUpdatedUTC"].ToString().Trim();
+
+                    oOut.Add(oUser);
+
+                }
+                dr.Close();
+                Cnxn.Close();
+                oPR.ObjectProcessed = oOut;
+            }
+            catch (Exception Exc)
+            {
+                oPR.Exception = Exc;
+                Logger.Error(Exc.Message);
+            }
+
+            return oPR;
+        }
+
+        public static string GetCnxnString(int ClientID, IConfiguration Config)
+        {
+            if (ClientID > 0)
+                return Config["CnxnString" + ClientID];
+            else
+                return Config["CnxnString"];
+
+
+        }
     }
 
 }

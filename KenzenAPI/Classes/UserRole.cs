@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Configuration;
-using System.Runtime.CompilerServices;
 using KenzenAPI.Classes;
 using Serilog;
 using Microsoft.Extensions.Configuration;
@@ -14,35 +12,38 @@ using Microsoft.Extensions.Configuration;
 namespace KenzenAPI.DataClasses
 {
 
-    public class APIRoleCollection : Dictionary<int, APIRole>
+    public class UserRoleCollection : Dictionary<int, UserRole>
     {
         public ILogger Logger;
         public IConfiguration Config;
 
         #region Constructors
-
-        public APIRoleCollection(){}
-        public APIRoleCollection(ILogger logger, IConfiguration config)
+        public UserRoleCollection() { }
+        public UserRoleCollection(ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
 
-            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(0, Config));
             try
             {
 
-                APIRole oAPIRole = new APIRole(null, null);
-                SqlCommand cmd = new SqlCommand(oAPIRole.SQLFetchAllString(), Cnxn);
+                UserRole oUserRole = new UserRole(null, null);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM " + oUserRole.TableName, Cnxn);
+                cmd.Connection = new SqlConnection(Client.GetCnxnString(0, Config));
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    oAPIRole = new APIRole(Logger, Config);
-                    oAPIRole.Name = dr["Name"] == DBNull.Value ? "" : dr["Name"].ToString().Trim();
-                    oAPIRole.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    if (!this.ContainsKey(oAPIRole.ID))
-                        this.Add(oAPIRole.ID, oAPIRole);
+                    oUserRole = new UserRole(Logger, Config);
+                    oUserRole.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
+                    oUserRole.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
+                    oUserRole.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oUserRole.RoleID = dr["RoleID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RoleID"]);
+                    oUserRole.UTC = dr["UTC"] == DBNull.Value ? "" : Convert.ToDateTime(dr["UTC"]).ToUniversalTime().ToString("o").Trim();
+                    if (!this.ContainsKey(oUserRole.ID))
+                        this.Add(oUserRole.ID, oUserRole);
                 }
 
                 dr.Close();
@@ -50,7 +51,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIRoleCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Log.LogErr("UserRoleCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -64,71 +65,56 @@ namespace KenzenAPI.DataClasses
 
 
 
-    public class APIRole : DataClassBase
+    public class UserRole : DataClassBase
     {
 
         #region Vars
 
+        int _UserID;
 
-        string _Name;
+        string _UTC;
+        int _RoleID;
+        int _ClientID;
 
         #endregion Vars
 
         #region Get/Sets
-        public string Name
+
+        public int UserID
         {
-            get { return (_Name); }
-            set { _Name = value; }
+            get { return (_UserID); }
+            set { _UserID = value; }
+        }
+
+        public string UTC
+        {
+            get { return (Convert.ToDateTime(_UTC).ToString("o")); }
+            set { _UTC = value; }
+        }
+
+        public int RoleID
+        {
+            get { return (_RoleID); }
+            set { _RoleID = value; }
+        }
+
+        public int ClientID
+        {
+            get { return (_ClientID); }
+            set { _ClientID = value; }
         }
 
         #endregion Get/Sets
 
         #region Constructors
 
-        public APIRole(ILogger logger, IConfiguration config)
+        public UserRole(ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
-            TableName = "APIRoles";
+            TableName = "UserRoles";
         }
 
-        public APIRole(int ID, ILogger logger, IConfiguration config) : this(logger, config)
-        {
-            string CnxnString = Config["CnxnString"];
-            string LogPath = Config["LogPath"];
-
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
-            try
-            {
-
-                SqlCommand cmd = new SqlCommand("SELECT * FROM " + this.TableName + " WHERE ID = @ID", Cnxn);
-
-                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
-                cmd.Parameters["@ID"].Value = ID;
-
-                Cnxn.Open();
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
-                {
-
-                    this.Name = dr["Name"] == DBNull.Value ? "" : dr["Name"].ToString().Trim();
-                    this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                }
-
-                dr.Close();
-                Cnxn.Close();
-            }
-            catch (Exception Exc)
-            {
-                Log.LogErr("APIRoleConstructor", Exc.Message, LogPath);
-            }
-            finally
-            {
-                if (Cnxn.State == ConnectionState.Open) Cnxn.Close();
-            }
-
-
-        }
 
         #endregion Constructors
 
@@ -143,15 +129,22 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO [" + this.SchemaName + "].[" + this.TableName + "] (ID, Name) VALUES (@ID, @Name)  SET @IDOut = @@IDENTITY", Cnxn);
+                SqlCommand cmd = new SqlCommand("INSERT INTO [" + this.SchemaName + "].[" + this.TableName + "] (ID, UserID, RoleID, ClientID)" +
+                    " VALUES (@ID, @UserID, @RoleID, @ClientID)  SET @IDOut = @@IDENTITY", Cnxn);
 
                 #region Parameters
-                // parameters for APIRoles
-                cmd.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 50));
-                cmd.Parameters["@Name"].Value = this.Name ?? "";
+                // parameters for UserRoles
+                cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
+                cmd.Parameters["@UserID"].Value = this.UserID;
+
+                cmd.Parameters.Add(new SqlParameter("@ClientID", SqlDbType.Int));
+                cmd.Parameters["@ClientID"].Value = this.ClientID;
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = this.ID;
+
+                cmd.Parameters.Add(new SqlParameter("@RoleID", SqlDbType.Int));
+                cmd.Parameters["@RoleID"].Value = this.RoleID;
 
                 // assign output param
                 cmd.Parameters.Add(new SqlParameter("@IDOut", SqlDbType.Int));
@@ -173,7 +166,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIRoleSave", Exc.Message, LogPath);
+                Log.LogErr("UserRoleSave", Exc.Message, LogPath);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -194,6 +187,7 @@ namespace KenzenAPI.DataClasses
             string CnxnString = Config["CnxnString"];
             string LogPath = Config["LogPath"];
 
+            ProcessResult oPR = new ProcessResult();
             SqlConnection Cnxn = new SqlConnection(CnxnString);
             try
             {
@@ -210,7 +204,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("APIRoleDelete", Exc.Message, LogPath);
+                Log.LogErr("UserRoleDelete", Exc.Message, LogPath);
                 return (false);
             }
             finally
@@ -222,10 +216,5 @@ namespace KenzenAPI.DataClasses
         }
         #endregion Delete
 
-        public string SQLFetchAllString()
-        {
-            string sSQL = "SELECT * FROM [" + this.SchemaName + "].[" + this.TableName + "]";
-            return (sSQL.Trim());
-        }
     }
 }
