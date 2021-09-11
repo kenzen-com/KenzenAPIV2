@@ -107,11 +107,11 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [Route("User")]
         [APIBodyAuth("User")]
-        public IActionResult User(User oModel)
+        public IActionResult User(User UserObjectJSON)
         {
             try
             {
-                ProcessResult oPR = oModel.Save();
+                ProcessResult oPR = UserObjectJSON.Save();
                 return Ok(oPR.Result);
             }
             catch (Exception e)

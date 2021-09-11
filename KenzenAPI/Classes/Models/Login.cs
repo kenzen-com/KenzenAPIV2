@@ -1,5 +1,6 @@
 ﻿using AzureWrapper;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,9 @@ namespace KenzenAPI.Classes.Models
 {
     public class Login
     {
+        [JsonIgnore]
         public ILogger Logger;
+        [JsonIgnore]
         public IConfiguration Config;
         public string Username { get; set; }
         public string Password { get; set; }
