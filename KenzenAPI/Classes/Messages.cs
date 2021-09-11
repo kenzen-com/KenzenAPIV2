@@ -145,6 +145,7 @@ namespace KenzenAPI.Classes
             Config = config;
             TableName = "Messages";
         }
+        public Message() { }
 
         public Message(int ID)
         {

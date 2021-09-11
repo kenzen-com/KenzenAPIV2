@@ -211,6 +211,7 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
+        public HeartRate() { }
         public HeartRate(ILogger logger, IConfiguration config)
         {
             Logger = logger;

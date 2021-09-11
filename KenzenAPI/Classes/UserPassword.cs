@@ -119,6 +119,7 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
+        public UserPassword() { }
 
         public UserPassword(ILogger logger, IConfiguration config)
         {

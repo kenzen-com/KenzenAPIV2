@@ -32,12 +32,12 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [APIBodyAuth("User")]
         [Route("Send")]
-        public IActionResult Send(Message M)
+        public IActionResult Send(Message MessageObjectJSON)
         {
             string sQ = "kenzen-message-queue";
             AzureWrapper.IO.QueueIO q = new AzureWrapper.IO.QueueIO(Config, Logger);
             q.CreateQueueClient(Cnxn);
-            string sM = JsonConvert.SerializeObject(M);
+            string sM = JsonConvert.SerializeObject(MessageObjectJSON);
             AzureWrapper.ProcessResult p = q.Insert(Cnxn, sQ, sM).Result;
             if (p.Exception == null)
                 return Ok("sent");

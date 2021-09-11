@@ -29,11 +29,11 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [APIRouteAuth("User")]
         [Route("Save")]
-        public IActionResult Save(Client c)
+        public IActionResult Save(Client ClientObjectJSON)
         {
             try
             {
-                AzureWrapper.ProcessResult oPR = c.Save(Client.GetCnxnString(c.ClientID, Config), Config["LogPath"]);
+                AzureWrapper.ProcessResult oPR = ClientObjectJSON.Save(Client.GetCnxnString(ClientObjectJSON.ClientID, Config), Config["LogPath"]);
                 if (oPR.Exception != null)
                     throw oPR.Exception;
 

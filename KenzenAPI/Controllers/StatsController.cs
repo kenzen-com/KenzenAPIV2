@@ -30,11 +30,11 @@ namespace KenzenAPI.Controllers
         [APIBodyAuth("User")]
         [Route("HR")]
         [HttpPost]
-        public IActionResult HR(HeartRate r)
+        public IActionResult HR(HeartRate HeartRateObjectJSON)
         {
-            ProcessResult p = r.Save();
+            ProcessResult p = HeartRateObjectJSON.Save();
             if (p.Exception == null)
-                return Ok(r.ID);
+                return Ok(HeartRateObjectJSON.ID);
             else
                 return BadRequest(p.Exception.Message);
         }
@@ -44,10 +44,10 @@ namespace KenzenAPI.Controllers
         [APIBodyAuth("User")]
         [Route("HRList")]
         [HttpPost]
-        public IActionResult HRList(List<HeartRate> r)
+        public IActionResult HRList(List<HeartRate> HeartRateObjectListJSON)
         {
 
-            ProcessResult p = HeartRate.SaveList(r, r[0].ClientID, Config);
+            ProcessResult p = HeartRate.SaveList(HeartRateObjectListJSON, HeartRateObjectListJSON[0].ClientID, Config);
             if (p.Exception == null)
                 return Ok("Saved");
             else
@@ -98,11 +98,11 @@ namespace KenzenAPI.Controllers
         [APIBodyAuth("User")]
         [Route("TH")]
         [HttpPost]
-        public IActionResult TH(TemperatureHumidity t)
+        public IActionResult TH(TemperatureHumidity TemperatureHumidityObjectJSON)
         {
-            ProcessResult p = t.Save();
+            ProcessResult p = TemperatureHumidityObjectJSON.Save();
             if (p.Exception == null)
-                return Ok(t.ID);
+                return Ok(TemperatureHumidityObjectJSON.ID);
             else
                 return BadRequest(p.Exception.Message);
         }
@@ -113,11 +113,11 @@ namespace KenzenAPI.Controllers
         [APIBodyAuth("User")]
         [Route("ME")]
         [HttpPost]
-        public IActionResult ME(MaxEnvironmental m)
+        public IActionResult ME(MaxEnvironmental MaxEnvironmentalObjectJSON)
         {
-            ProcessResult p = m.Save();
+            ProcessResult p = MaxEnvironmentalObjectJSON.Save();
             if (p.Exception == null)
-                return Ok(m.ID);
+                return Ok(MaxEnvironmentalObjectJSON.ID);
             else
                 return BadRequest(p.Exception.Message);
         }

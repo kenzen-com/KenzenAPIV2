@@ -216,7 +216,7 @@ namespace KenzenAPI.Classes
             TableName = "Clients";
 
         }
-
+        public Client() { }
         public Client(int ClientID, ILogger logger, IConfiguration config) : this(logger, config)
         {
             // fill props from db

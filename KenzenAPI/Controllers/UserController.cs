@@ -37,16 +37,16 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [Route("Login")]
 
-        public IActionResult Login(Login L)
+        public IActionResult Login(Login LoginObjectJSON)
         {
             Login u = new Login();
             try
             {
                 // expects username and password in body
-                if (L == null)
+                if (LoginObjectJSON == null)
                     return BadRequest("Login failed");
 
-                u = (Login)Classes.Models.Login.LogMeIn(L.ClientID, L.Username, L.Password, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
+                u = (Login)Classes.Models.Login.LogMeIn(LoginObjectJSON.ClientID, LoginObjectJSON.Username, LoginObjectJSON.Password, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
                 if (u != null && u.UserID > 0)
                 {
                     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JWTKey"]));
@@ -81,11 +81,11 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         [Route("UpdatePassword")]
         [APIRouteAuth("User")]
-        public IActionResult UpdatePassword(UserPassword oPW)
+        public IActionResult UpdatePassword(UserPassword UserPasswordObjectJSON)
         {
             try
             {
-                ProcessResult oPR = oPW.Save();
+                ProcessResult oPR = UserPasswordObjectJSON.Save();
                 if (oPR.Exception != null)
                     throw oPR.Exception;
 
@@ -170,13 +170,13 @@ namespace KenzenAPI.Controllers
         /// </summary>
         [HttpPost]
         [APIRouteAuth("User")]
-        [Route("Heartrates/{UserID}")]
-        public IActionResult Heartrates(List<HeartRate> l, int UserID)
+        [Route("Heartrates")]
+        public IActionResult Heartrates(List<HeartRate> HeartRateListObjectJSON)
         {
             try
             {
-                User u = new User(UserID, Logger, Config);
-                ProcessResult oPR = HeartRate.SaveList(l, u.ClientID, Config);
+                User u = new User(HeartRateListObjectJSON[0].UserID, Logger, Config);
+                ProcessResult oPR = HeartRate.SaveList(HeartRateListObjectJSON, u.ClientID, Config);
                 if (oPR.Exception == null)
                     return Ok("Saved");
                 else

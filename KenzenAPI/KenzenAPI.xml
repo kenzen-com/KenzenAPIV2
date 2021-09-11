@@ -74,7 +74,7 @@
              Accepts a UserID in the Route URL | Fetches a list of UserRoles for the UserID in that Program(ID)
             </summary>
         </member>
-        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate},System.Int32)">
+        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate})">
             <summary>
              Accepts a List of HeartRates as JSON
             </summary>

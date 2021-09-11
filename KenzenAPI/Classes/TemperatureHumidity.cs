@@ -175,6 +175,7 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
+        public TemperatureHumidity() { }
 
         public TemperatureHumidity(ILogger logger, IConfiguration config)
         {

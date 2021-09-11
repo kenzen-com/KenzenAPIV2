@@ -152,6 +152,8 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
+        public MaxEnvironmental() { }
+
         public MaxEnvironmental(ILogger logger, IConfiguration config)
         {
             Logger = logger;
