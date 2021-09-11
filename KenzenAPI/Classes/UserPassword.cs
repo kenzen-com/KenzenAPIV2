@@ -131,10 +131,8 @@ namespace KenzenAPI.DataClasses
 
         public UserPassword(int ID, ILogger logger, IConfiguration config) : this(logger, config)
         {
-            string CnxnString = Config["CnxnString"];
-            string LogPath = Config["LogPath"];
 
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
@@ -160,7 +158,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordConstructor", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -175,11 +173,8 @@ namespace KenzenAPI.DataClasses
         #region Save
         public ProcessResult Save()
         {
-            string CnxnString = Config["CnxnString"];
-            string LogPath = Config["LogPath"];
-
             ProcessResult oPR = new ProcessResult();
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
@@ -214,7 +209,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordSave", Exc.Message, LogPath);
+                Log.LogErr("UserPasswordSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";

@@ -8,7 +8,14 @@
         .smallsh {
             font-size: smaller;
         }
+        .bluebg {
+            background-color:lightblue;
+        }
+        .blueborder {
+            border: 1px solid darkblue;
+        }
     </style>
+
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
@@ -17,6 +24,11 @@
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
+
+        <br />
+        <i>NOTE: Each API call following Login expects a valid Bearer Token (returned from the login process) in the Authorization Header of the HttpRequest</i>
+        <br />
+        <br />
         @foreach (var group in Model.ApiDescriptionGroups.Items)
         {
             <h4>@group.GroupName</h4>
@@ -24,7 +36,7 @@
                 @foreach (var api in group.Items)
                 {
                     <li>
-                        <h3>@api.HttpMethod @api.RelativePath</h3>
+                        <h3 class="bluebg"><label class="blueborder">@api.HttpMethod</label> @api.RelativePath</h3>
                         <blockquote>
                             @if (api.ParameterDescriptions.Count > 0)
                             {
@@ -49,7 +61,7 @@
                                         {
                                             object o = Activator.CreateInstance(parameter.Type);
                                             <dt class="smallsh">&nbsp;&nbsp;JSON Body</dt>
-                                            <dd class="smallsh">@JsonConvert.SerializeObject(o);</dd>
+                                            <dd><code>@JsonConvert.SerializeObject(o)</code></dd>
                                         }
                                     }
                                 </dl>

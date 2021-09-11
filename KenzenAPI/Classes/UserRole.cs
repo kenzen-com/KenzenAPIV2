@@ -14,15 +14,11 @@ namespace KenzenAPI.DataClasses
 
     public class UserRoleCollection : Dictionary<int, UserRole>
     {
-        public ILogger Logger;
-        public IConfiguration Config;
 
         #region Constructors
         public UserRoleCollection() { }
-        public UserRoleCollection(ILogger logger, IConfiguration config)
+        public UserRoleCollection(ILogger Logger, IConfiguration Config)
         {
-            Logger = logger;
-            Config = config;
 
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(0, Config));
             try

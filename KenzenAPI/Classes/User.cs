@@ -15,15 +15,11 @@ namespace KenzenAPI.DataClasses
 
     public class UserCollection : Dictionary<int, User>
     {
-        public ILogger Logger;
-        public IConfiguration Config;
 
         #region Constructors
         public UserCollection() { }
-        public UserCollection(ILogger logger, IConfiguration config, int ClientID = 0)
+        public UserCollection(ILogger Logger, IConfiguration Config, int ClientID = 0)
         {
-            Logger = logger;
-            Config = config;
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
@@ -33,7 +29,7 @@ namespace KenzenAPI.DataClasses
                 if (ClientID > 0)
                 {
                     Client c = new Client(ClientID, Logger, Config);
-                    sSQL = "[" + c.SchemaName + "].[spUsersFetch]";
+                    sSQL = "spUsersFetch";
                 }
 
                 SqlCommand cmd = new SqlCommand(sSQL, Cnxn);
