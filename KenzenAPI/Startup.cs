@@ -33,6 +33,10 @@ namespace KenzenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Kenzen API", Version = "V2" });
+            }); 
             services.AddControllers();
             services.AddControllersWithViews();
             services.AddSingleton(Serilog.Log.Logger);
@@ -41,15 +45,21 @@ namespace KenzenAPI
                 builder.AddBlobServiceClient(Configuration["PrimaryQueue:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["PrimaryQueue:queue"], preferMsi: true);
             });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Kenzen API", Version = "V2" });
-            });
+ 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+           // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Kenzen API V2");
+            });  
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -64,14 +74,7 @@ namespace KenzenAPI
                 endpoints.MapControllers();
             });
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Kenzen API V2");
-            });
+ 
         }
 
         public void LoadLists()
