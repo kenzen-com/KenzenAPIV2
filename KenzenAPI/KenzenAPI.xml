@@ -6,12 +6,47 @@
     <members>
         <member name="M:KenzenAPI.Controllers.AdminController.Users">
             <summary>
-             Accepts a UserID in the Route URL | Fetches a list of Users
+             Accepts a UserID in the Route URL | Fetches a list of all Users
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.ClientController.Save(KenzenAPI.Classes.Client)">
+            <summary>
+             Expects a Client object
             </summary>
         </member>
         <member name="M:KenzenAPI.Controllers.ClientController.Users(System.Int32)">
             <summary>
              Accepts a ClientID and a UserID in the Route URL | Fetches a list of Users by Client
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.MessageController.Send(KenzenAPI.Classes.Message)">
+            <summary>
+             Expects a Message, sends that JSON to an Azure Queue
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.HRList(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate})">
+            <summary>
+             Expects a list of HeartRates
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.HRFetch(System.Int32)">
+            <summary>
+             Expects a Client ID in the URI and returns a list of HeartRates
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.HRFetch(System.Int32,System.Int32)">
+            <summary>
+             Expects a Client ID and a UserID in the URI and returns a list of HeartRates
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.TH(KenzenAPI.DataClasses.TemperatureHumidity)">
+            <summary>
+             Expects a TemperatureHumidity object
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.ME(KenzenAPI.DataClasses.MaxEnvironmental)">
+            <summary>
+             Expects a MaxEnvironmental object
             </summary>
         </member>
         <member name="M:KenzenAPI.Controllers.UserController.Login(KenzenAPI.Classes.Models.Login)">
@@ -44,7 +79,7 @@
              Accepts a List of HeartRates as JSON
             </summary>
         </member>
-        <member name="M:KenzenAPI.Controllers.UserController.Heartrates">
+        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Int32)">
             <summary>
              Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
             </summary>

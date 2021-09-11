@@ -8,6 +8,10 @@
     <DocumentationFile>C:\Users\D\Source\Repos\KenzenAPIV2\KenzenAPI\KenzenAPI.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\D\Source\Repos\KenzenAPIV2\KenzenAPI\KenzenAPI.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
     <PackageReference Include="Azure.Storage.Common" Version="12.8.0" />
