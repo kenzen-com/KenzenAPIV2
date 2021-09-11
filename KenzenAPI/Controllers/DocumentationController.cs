@@ -17,6 +17,8 @@ namespace KenzenAPI.Controllers
             _apiExplorer = apiExplorer;
         }
 
+        [HttpGet]
+        [Route("Index")]
         public IActionResult Index()
         {
             return View(_apiExplorer);

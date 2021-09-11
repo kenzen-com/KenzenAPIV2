@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace KenzenAPI.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(MessageController))]
     [Route("[controller]")]
     public class StatsController : Controller
     {
@@ -22,6 +21,8 @@ namespace KenzenAPI.Controllers
             Config = config;
         }
         string Cnxn = "DefaultEndpointsProtocol=https;AccountName=kenzenstorage1;AccountKey=O+C4dkXZAdI+8BNvfJ6iwPu9BB5jUmb+AIhL8w9XKm4RF5dXSSz5joP8WIJB6jz7ohiRdMD1fojOloor7RrpVw==;EndpointSuffix=core.windows.net";
+        [HttpGet]
+        [Route("Index")]
         public IActionResult Index()
         {
             return Ok("hello");

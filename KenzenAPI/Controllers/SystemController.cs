@@ -13,7 +13,6 @@ using KenzenAPI.Classes;
 namespace KenzenAPI.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(SystemController))]
     [Route("[controller]")]
     public class SystemController : Controller
     {
@@ -24,6 +23,8 @@ namespace KenzenAPI.Controllers
             Logger = logger;
             Config = config;
         }
+        [HttpGet]
+        [Route("Index")]
         public IActionResult Index()
         {
             return View();

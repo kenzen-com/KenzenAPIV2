@@ -17,7 +17,6 @@ using System.Text;
 namespace KenzenAPI.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(UserController))]
     [Route("[controller]")]
     public class UserController : Controller
     {

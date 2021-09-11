@@ -16,6 +16,7 @@ using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
 using KenzenAPI.Classes.Lookup;
+using Microsoft.OpenApi.Models;
 
 namespace KenzenAPI
 {
@@ -40,6 +41,10 @@ namespace KenzenAPI
                 builder.AddBlobServiceClient(Configuration["PrimaryQueue:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["PrimaryQueue:queue"], preferMsi: true);
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Kenzen API", Version = "V2" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +62,15 @@ namespace KenzenAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Kenzen API V2");
             });
         }
 
