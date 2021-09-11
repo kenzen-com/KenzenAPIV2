@@ -265,7 +265,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SELECT * FROM [" + this.SchemaName + "].[" + this.TableName + "] WHERE ID = @ID", Cnxn);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM " + this.TableName + " WHERE ID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;
@@ -435,7 +435,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("DELETE FROM [" + this.SchemaName + "].[" + this.TableName + "] WHERE ID = @ID", Cnxn);
+                SqlCommand cmd = new SqlCommand("DELETE FROM " + this.TableName + " WHERE ID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = this.ID;
@@ -469,7 +469,7 @@ namespace KenzenAPI.DataClasses
             try
             {
                 User u = new User(null, null);
-                SqlCommand cmd = new SqlCommand("[" + u.SchemaName + "].[spUserRolesFetch]", Cnxn);
+                SqlCommand cmd = new SqlCommand("spUserRolesFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));

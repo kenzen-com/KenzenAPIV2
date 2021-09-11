@@ -177,14 +177,11 @@ namespace KenzenAPI.Controllers
             try
             {
                 User u = new User(UserID, Logger, Config);
-                foreach (HeartRate r in l)
-                {
-                    ProcessResult oPR = r.Save(u.ClientID);
-                    if (oPR.Exception != null)
-                        throw oPR.Exception;
-                }
-
-                return Ok("Saved");
+                ProcessResult oPR = HeartRate.SaveList(l, u.ClientID, Config);
+                if (oPR.Exception == null)
+                    return Ok("Saved");
+                else
+                    return BadRequest(oPR.Exception.Message);
 
             }
             catch (Exception ex)
@@ -197,13 +194,13 @@ namespace KenzenAPI.Controllers
         ///  Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
         /// </summary>
         [HttpGet]
-        [Route("Heartrates/{UserID}")]
+        [Route("Heartrates/{ClientID}/{UserID}")]
         [APIRouteAuth("User")]
-        public IActionResult Heartrates()
+        public IActionResult Heartrates(int ClientID)
         {
             try
             {
-                HeartRateCollection u = new HeartRateCollection(Logger, Config);
+                HeartRateCollection u = new HeartRateCollection(Logger, Config, ClientID);
                 return Ok(u);
             }
             catch (Exception e)

@@ -129,7 +129,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO [" + this.SchemaName + "].[" + this.TableName + "] (ID, UserID, RoleID, ClientID)" +
+                SqlCommand cmd = new SqlCommand("INSERT INTO " + this.TableName + " (ID, UserID, RoleID, ClientID)" +
                     " VALUES (@ID, @UserID, @RoleID, @ClientID)  SET @IDOut = @@IDENTITY", Cnxn);
 
                 #region Parameters
@@ -192,7 +192,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("DELETE FROM [" + this.SchemaName + "].[" + this.TableName + "] WHERE ID = @ID", Cnxn);
+                SqlCommand cmd = new SqlCommand("DELETE FROM " + this.TableName + " WHERE ID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;

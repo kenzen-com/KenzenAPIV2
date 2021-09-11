@@ -40,7 +40,7 @@ namespace KenzenAPI.DataClasses
             {
 
                 UserPassword oUserPassword = new UserPassword(Logger, Config);
-                SqlCommand cmd = new SqlCommand("SELECT * FROM [" + oUserPassword.SchemaName + "].[" + oUserPassword.TableName + "] WHERE UserID = @ID", Cnxn);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM " + oUserPassword.TableName + " WHERE UserID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;
@@ -137,7 +137,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SELECT * FROM [" + this.SchemaName + "].[" + this.TableName + "] WHERE UserID = @ID AND IsCurrent = 1", Cnxn);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM " + this.TableName + " WHERE UserID = @ID AND IsCurrent = 1", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;
@@ -182,7 +182,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("[" + this.SchemaName + "].[spPasswordSave]", Cnxn);
+                SqlCommand cmd = new SqlCommand("spPasswordSave", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 #region Parameters
@@ -238,7 +238,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("DELETE FROM [" + this.SchemaName + "].[" + this.TableName + "] WHERE ID = @ID", Cnxn);
+                SqlCommand cmd = new SqlCommand("DELETE FROM " + this.TableName + " WHERE ID = @ID", Cnxn);
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = ID;

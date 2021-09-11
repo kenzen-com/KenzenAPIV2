@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
+using KenzenAPI.Classes;
 
 namespace KenzenAPI.Controllers
 {
@@ -87,6 +88,30 @@ namespace KenzenAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-  
+
+        [HttpGet]
+        [APIRouteAuth("User")]
+        [Route("JSON/{UserID}")]
+        public IActionResult JSON()
+        {
+            string sOut = "Client" + System.Environment.NewLine;
+            sOut += new Client(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "User" + System.Environment.NewLine;
+            sOut += new User().ToJson() + System.Environment.NewLine;
+            sOut += "Message" + System.Environment.NewLine;
+            sOut += new Message(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "HeartRate" + System.Environment.NewLine;
+            sOut += new HeartRate(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "MaxEnvironmental" + System.Environment.NewLine;
+            sOut += new MaxEnvironmental(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "TemperatureHumidity" + System.Environment.NewLine;
+            sOut += new TemperatureHumidity(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "ConnectionStatus" + System.Environment.NewLine;
+            sOut += new ConnectionStatus(null, null).ToJson() + System.Environment.NewLine;
+            sOut += "WorkRest" + System.Environment.NewLine;
+            sOut += new WorkRest(null, null).ToJson() + System.Environment.NewLine;
+
+            return Ok(sOut);
+        }
     }
 }

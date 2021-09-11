@@ -54,7 +54,7 @@ namespace KenzenAPI.Controllers
 
         #region Users
         /// <summary>
-        ///  Accepts a UserID in the Route URL | Fetches a list of Users
+        ///  Accepts a UserID in the Route URL | Fetches a list of all Users
         /// </summary>
         [HttpGet]
         [Route("Users/{UserID}")]

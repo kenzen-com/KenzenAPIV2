@@ -4,46 +4,45 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Serilog;
-using Microsoft.Extensions.Configuration;
 using KenzenAPI.Classes;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace KenzenAPI.DataClasses
 {
-
-    public class AlertCollection : Dictionary<int, Alert>
+    public class DailyFeedbackCollection : Dictionary<int, DailyFeedback>
     {
 
         #region Constructors
 
-        public AlertCollection()
+        public DailyFeedbackCollection()
         {
         }
 
-        public AlertCollection(int ClientID, IConfiguration Config)
+        public DailyFeedbackCollection(int ClientID, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spAlertsFetch", Cnxn);
+                SqlCommand cmd = new SqlCommand("spDailyFeedbacksFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    Alert oAlert = new Alert(null, null);
-                    oAlert.AlertStageID = dr["AlertStageID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AlertStageID"]);
-                    oAlert.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
-                    oAlert.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
-                    oAlert.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    oAlert.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
-                    oAlert.AlertCounter = dr["AlertCounter"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AlertCounter"]);
-                    oAlert.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
-                    if (!this.ContainsKey(oAlert.ID))
-                        this.Add(oAlert.ID, oAlert);
+                    DailyFeedback oDailyFeedback = new DailyFeedback(null, null);
+                    oDailyFeedback.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
+                    oDailyFeedback.QuestionID = dr["QuestionID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["QuestionID"]);
+                    oDailyFeedback.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+                    oDailyFeedback.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oDailyFeedback.Response = dr["Response"] == DBNull.Value ? "" : dr["Response"].ToString().Trim();
+                    oDailyFeedback.AnswerID = dr["AnswerID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AnswerID"]);
+                    oDailyFeedback.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    if (!this.ContainsKey(oDailyFeedback.ID))
+                        this.Add(oDailyFeedback.ID, oDailyFeedback);
                 }
 
                 dr.Close();
@@ -51,7 +50,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Log.LogErr("DailyFeedbackCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -68,7 +67,7 @@ namespace KenzenAPI.DataClasses
             ProcessResult oPR = new ProcessResult();
             try
             {
-                foreach (Alert o in this.Values)
+                foreach (DailyFeedback o in this.Values)
                 {
                     oPR = o.Save();
                     if (oPR.Exception != null)
@@ -80,7 +79,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertCollection Save", Exc.Message, Config["LogPath"]);
+                Log.LogErr("DailyFeedbackCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -89,19 +88,19 @@ namespace KenzenAPI.DataClasses
     }
 
 
-    [Serializable]
-    public class Alert : DataClassBase
+
+    public class DailyFeedback : DataClassBase
     {
 
         #region Vars
 
         int _UserID;
-        int _AlertCounter;
+        int _QuestionID;
         int _ID;
+        int _AnswerID;
         string _UTC;
         int _GMT;
-        int _TeamID;
-        int _AlertStageID;
+        string _Response;
 
         #endregion Vars
 
@@ -113,16 +112,22 @@ namespace KenzenAPI.DataClasses
             set { _UserID = value; }
         }
 
-        public int AlertCounter
+        public int QuestionID
         {
-            get { return (_AlertCounter); }
-            set { _AlertCounter = value; }
+            get { return (_QuestionID); }
+            set { _QuestionID = value; }
         }
 
         public int ID
         {
             get { return (_ID); }
             set { _ID = value; }
+        }
+
+        public int AnswerID
+        {
+            get { return (_AnswerID); }
+            set { _AnswerID = value; }
         }
 
         public string UTC
@@ -137,55 +142,46 @@ namespace KenzenAPI.DataClasses
             set { _GMT = value; }
         }
 
-        public int TeamID
+        public string Response
         {
-            get { return (_TeamID); }
-            set { _TeamID = value; }
-        }
-
-        public int AlertStageID
-        {
-            get { return (_AlertStageID); }
-            set { _AlertStageID = value; }
+            get { return (_Response); }
+            set { _Response = value; }
         }
 
         #endregion Get/Sets
 
         #region Constructors
-        ILogger Logger;
-        IConfiguration Config;
-        public Alert(ILogger logger, IConfiguration config)
+
+        public DailyFeedback(ILogger logger, IConfiguration config)
         {
             Logger = logger;
             Config = config;
         }
 
-        #endregion Constructors
-
-        public Alert(int AlertID, IConfiguration Config)
+        public DailyFeedback(int DailyFeedbackID)
         {
             // fill props from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spAlertInfoFetch", Cnxn);
+                SqlCommand cmd = new SqlCommand("spDailyFeedbackInfoFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@AlertID", SqlDbType.Int));
-                cmd.Parameters["@AlertID"].Value = AlertID;
+                cmd.Parameters.Add(new SqlParameter("@DailyFeedbackID", SqlDbType.Int));
+                cmd.Parameters["@DailyFeedbackID"].Value = DailyFeedbackID;
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
 
-                    this.AlertStageID = dr["AlertStageID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AlertStageID"]);
                     this.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
-                    this.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
-                    this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    this.QuestionID = dr["QuestionID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["QuestionID"]);
                     this.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
-                    this.AlertCounter = dr["AlertCounter"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AlertCounter"]);
+                    this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    this.Response = dr["Response"] == DBNull.Value ? "" : dr["Response"].ToString().Trim();
+                    this.AnswerID = dr["AnswerID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["AnswerID"]);
                     this.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
                 }
 
@@ -194,7 +190,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertConstructor", Exc.Message, Config["LogPath"]);
+                Log.LogErr("DailyFeedbackConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -204,6 +200,7 @@ namespace KenzenAPI.DataClasses
 
         }
 
+        #endregion Constructors
 
         #region Save
         public ProcessResult Save()
@@ -213,35 +210,35 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spAlertSave", Cnxn);
+                SqlCommand cmd = new SqlCommand("spDailyFeedbackSave", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 #region Parameters
-                // parameters for Alerts
-                cmd.Parameters.Add(new SqlParameter("@AlertStageID", SqlDbType.Int));
-                cmd.Parameters["@AlertStageID"].Value = this.AlertStageID;
-
+                // parameters for DailyFeedback
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
 
-                cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
-                cmd.Parameters["@TeamID"].Value = this.TeamID;
-
-                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
-                cmd.Parameters["@ID"].Value = this.ID;
+                cmd.Parameters.Add(new SqlParameter("@QuestionID", SqlDbType.Int));
+                cmd.Parameters["@QuestionID"].Value = this.QuestionID;
 
                 cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
                 cmd.Parameters["@GMT"].Value = this.GMT;
 
-                cmd.Parameters.Add(new SqlParameter("@AlertCounter", SqlDbType.Int));
-                cmd.Parameters["@AlertCounter"].Value = this.AlertCounter;
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = this.ID;
+
+                cmd.Parameters.Add(new SqlParameter("@Response", SqlDbType.VarChar, 255));
+                cmd.Parameters["@Response"].Value = this.Response ?? "";
+
+                cmd.Parameters.Add(new SqlParameter("@AnswerID", SqlDbType.Int));
+                cmd.Parameters["@AnswerID"].Value = this.AnswerID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
                 cmd.Parameters["@UTC"].Value = this.UTC ?? "";
 
                 // assign output param
-                cmd.Parameters.Add(new SqlParameter("@AlertIDOut", SqlDbType.Int));
-                cmd.Parameters["@AlertIDOut"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@DailyFeedbackIDOut", SqlDbType.Int));
+                cmd.Parameters["@DailyFeedbackIDOut"].Direction = ParameterDirection.Output;
 
                 #endregion Parameters
 
@@ -249,8 +246,8 @@ namespace KenzenAPI.DataClasses
                 cmd.ExecuteNonQuery();
                 Cnxn.Close();
 
-                int iAlertID = Convert.ToInt32(cmd.Parameters["@AlertIDOut"].Value);
-                this.ID = iAlertID;
+                int iDailyFeedbackID = Convert.ToInt32(cmd.Parameters["@DailyFeedbackIDOut"].Value);
+                this.ID = iDailyFeedbackID;
 
                 oPR.ObjectProcessed = this;
                 oPR.Result += "Saved";
@@ -259,7 +256,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertSave", Exc.Message, Config["LogPath"]);
+                Log.LogErr("DailyFeedbackSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -275,17 +272,17 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int AlertID, int ClientID, IConfiguration Config)
+        public static bool Delete(int DailyFeedbackID, int ClientID, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spAlertDelete", Cnxn);
+                SqlCommand cmd = new SqlCommand("spDailyFeedbackDelete", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@AlertID", SqlDbType.Int));
-                cmd.Parameters["@AlertID"].Value = AlertID;
+                cmd.Parameters.Add(new SqlParameter("@DailyFeedbackID", SqlDbType.Int));
+                cmd.Parameters["@DailyFeedbackID"].Value = DailyFeedbackID;
 
                 Cnxn.Open();
                 cmd.ExecuteNonQuery();
@@ -294,7 +291,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertDelete", Exc.Message, Config["LogPath"]);
+                Log.LogErr("DailyFeedbackDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

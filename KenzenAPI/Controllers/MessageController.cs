@@ -24,9 +24,13 @@ namespace KenzenAPI.Controllers
         {
             return Ok("hello");
         }
+
+        /// <summary>
+        ///  Expects a Message, sends that JSON to an Azure Queue
+        /// </summary>
+        [HttpGet]
         [APIBodyAuth("User")]
         [Route("Send")]
-        [HttpPost]
         public IActionResult Send(Message M)
         {
             string sQ = "kenzen-message-queue";

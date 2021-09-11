@@ -10,13 +10,14 @@ namespace KenzenAPI.Classes
 {
     public abstract class DataClassBase
     {
+        [JsonIgnore]
         public ILogger Logger;
+        [JsonIgnore]
         public IConfiguration Config;
 
 
         public int ID { get; set; }
         public int ClientID { get; set; }
-        public string SchemaName { get; set; } = "dbo";
         public string TableName { get; set; }
 
         public virtual string ToJson()

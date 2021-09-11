@@ -4,9 +4,14 @@
         <name>KenzenAPI</name>
     </assembly>
     <members>
-        <member name="M:KenzenAPI.Controllers.SystemController.User">
+        <member name="M:KenzenAPI.Controllers.AdminController.Users">
             <summary>
              Accepts a UserID in the Route URL | Fetches a list of Users
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.ClientController.Users(System.Int32)">
+            <summary>
+             Accepts a ClientID and a UserID in the Route URL | Fetches a list of Users by Client
             </summary>
         </member>
         <member name="M:KenzenAPI.Controllers.UserController.Login(KenzenAPI.Classes.Models.Login)">
@@ -14,12 +19,12 @@
              Accepts a Login object as JSON | Returns an User object
             </summary>
         </member>
-        <member name="M:KenzenAPI.Controllers.UserController.UpdatePassword(System.Net.Http.HttpRequestMessage)">
+        <member name="M:KenzenAPI.Controllers.UserController.UpdatePassword(KenzenAPI.DataClasses.UserPassword)">
             <summary>
              Accepts a UserID in the Route URL | Updates a User Password for the User ID in the JSON object
             </summary>
         </member>
-        <member name="M:KenzenAPI.Controllers.UserController.User(System.Net.Http.HttpRequestMessage)">
+        <member name="M:KenzenAPI.Controllers.UserController.User(KenzenAPI.DataClasses.User)">
             <summary>
             Accepts a User object as JSON | Returns an ID
             </summary>
@@ -34,7 +39,7 @@
              Accepts a UserID in the Route URL | Fetches a list of UserRoles for the UserID in that Program(ID)
             </summary>
         </member>
-        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate})">
+        <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Collections.Generic.List{KenzenAPI.DataClasses.HeartRate},System.Int32)">
             <summary>
              Accepts a List of HeartRates as JSON
             </summary>

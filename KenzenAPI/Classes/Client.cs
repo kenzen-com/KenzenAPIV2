@@ -111,6 +111,7 @@ namespace KenzenAPI.Classes
         string _ContactName;
         string _ContactEmail;
         bool _IsEncrypted;
+        bool _IsPrivate;
 
         #endregion Vars
 
@@ -201,6 +202,7 @@ namespace KenzenAPI.Classes
         }
 
         public bool IsEncrypted { get => _IsEncrypted; set => _IsEncrypted = value; }
+        public bool IsPrivate { get => _IsPrivate; set => _IsPrivate = value; }
 
         #endregion Get/Sets
 
@@ -369,6 +371,7 @@ namespace KenzenAPI.Classes
                     this.Zip = dr["Zip"] == DBNull.Value ? "" : dr["Zip"].ToString().Trim();
                     this.SchemaName = dr["SchemaName"] == DBNull.Value ? "" : dr["SchemaName"].ToString().Trim();
                     this.IsEncrypted = dr["IsEncrypted"] == DBNull.Value ? false : true;
+                    this.IsPrivate = dr["IsPrivate"] == DBNull.Value ? false : true;
                 }
                 else
                 {

@@ -23,6 +23,9 @@ namespace KenzenAPI.Controllers
             Config = config;
         }
 
+        /// <summary>
+        ///  Expects a Client object
+        /// </summary>
         [HttpPost]
         [APIRouteAuth("User")]
         [Route("Save")]
