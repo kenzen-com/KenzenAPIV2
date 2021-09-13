@@ -148,22 +148,10 @@ namespace KenzenAPI.DataClasses
             set { _TeamID = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
         public decimal AmbientRH110_1min
         {
             get { return (_AmbientRH110_1min); }
             set { _AmbientRH110_1min = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
         }
 
         public decimal SkinTemp109_1min

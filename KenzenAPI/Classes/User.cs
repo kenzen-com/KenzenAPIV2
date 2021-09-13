@@ -197,28 +197,11 @@ namespace KenzenAPI.DataClasses
             set { _LastLoginUTC = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
-        public int ClientID
-        {
-            get { return (_ClientID); }
-            set { _ClientID = value; }
-        }
 
         public string Username
         {
             get { return (_Username); }
             set { _Username = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
         }
 
         public string EmailAddress

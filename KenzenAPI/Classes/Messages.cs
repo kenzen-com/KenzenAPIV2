@@ -102,12 +102,6 @@ namespace KenzenAPI.Classes
 
         #region Get/Sets
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
         public string MessageBody
         {
             get { return (_Message); }
@@ -120,25 +114,12 @@ namespace KenzenAPI.Classes
             set { _DeviceID = value; }
         }
 
-        public int ClientID
-        {
-            get { return (_ClientID); }
-            set { _ClientID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
-        }
 
         public string MessageType { get => _MessageType; set => _MessageType = value; }
 
         #endregion Get/Sets
 
         #region Constructors
-        ILogger Logger;
-        IConfiguration Config;
         public Message(ILogger logger, IConfiguration config)
         {
             Logger = logger;

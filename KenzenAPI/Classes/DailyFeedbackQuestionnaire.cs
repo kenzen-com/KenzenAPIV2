@@ -97,13 +97,6 @@ namespace KenzenAPI.DataClasses
 		#endregion Vars
 
 		#region Get/Sets
-
-		public int ID
-		{
-			get { return (_ID); }
-			set { _ID = value; }
-		}
-
 		public string QuestionType
 		{
 			get { return (_QuestionType); }

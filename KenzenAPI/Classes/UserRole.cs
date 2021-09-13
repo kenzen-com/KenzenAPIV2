@@ -82,23 +82,12 @@ namespace KenzenAPI.DataClasses
             set { _UserID = value; }
         }
 
-        public string UTC
-        {
-            get { return (Convert.ToDateTime(_UTC).ToString("o")); }
-            set { _UTC = value; }
-        }
-
         public int RoleID
         {
             get { return (_RoleID); }
             set { _RoleID = value; }
         }
 
-        public int ClientID
-        {
-            get { return (_ClientID); }
-            set { _ClientID = value; }
-        }
 
         #endregion Get/Sets
 

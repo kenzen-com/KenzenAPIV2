@@ -113,12 +113,6 @@ namespace KenzenAPI.DataClasses
             set { _UserID = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
         public int LocationID
         {
             get { return (_LocationID); }
@@ -129,12 +123,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_PredictedMaxRH); }
             set { _PredictedMaxRH = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
         }
 
         public decimal PredictedMaxTemp

@@ -119,18 +119,6 @@ namespace KenzenAPI.DataClasses
             set { _AlertCounter = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
-        }
-
         public int GMT
         {
             get { return (_GMT); }
@@ -152,8 +140,6 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
-        ILogger Logger;
-        IConfiguration Config;
         public Alert(ILogger logger, IConfiguration config)
         {
             Logger = logger;

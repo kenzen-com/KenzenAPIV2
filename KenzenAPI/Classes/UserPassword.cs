@@ -98,12 +98,7 @@ namespace KenzenAPI.DataClasses
             get { return (_UserID); }
             set { _UserID = value; }
         }
-        public string UTC
-        {
-            get { return (Convert.ToDateTime(_UTC).ToString("o")); }
-            set { _UTC = value; }
-        }
-
+  
         public bool IsCurrent
         {
             get { return (_IsCurrent); }

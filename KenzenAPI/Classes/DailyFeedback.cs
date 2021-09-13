@@ -118,22 +118,10 @@ namespace KenzenAPI.DataClasses
             set { _QuestionID = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
         public int AnswerID
         {
             get { return (_AnswerID); }
             set { _AnswerID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
         }
 
         public int GMT

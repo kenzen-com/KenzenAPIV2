@@ -159,18 +159,6 @@ namespace KenzenAPI.Classes
             set { _ContactPhone = value; }
         }
 
-        public int ID
-        {
-            get { return (_ID); }
-            set { _ID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
-        }
-
         public int LastEditBy
         {
             get { return (_LastEditBy); }
@@ -207,8 +195,6 @@ namespace KenzenAPI.Classes
         #endregion Get/Sets
 
         #region Constructors
-        ILogger Logger;
-        IConfiguration Config;
         public Client(ILogger logger, IConfiguration config)
         {
             Logger = logger;
