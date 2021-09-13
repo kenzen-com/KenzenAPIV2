@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using NSwag.Annotations;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace KenzenAPI.Classes
         string _UTC;
         public ILogger Logger;
         public IConfiguration Config;
-        [OpenApiIgnore]
+        [JsonIgnore]
         internal string TableName { get; set; }
         public string UTC
         {

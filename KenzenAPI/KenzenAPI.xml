@@ -49,6 +49,12 @@
              Expects a MaxEnvironmental object
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.SystemController.LookupList(System.String)">
+            <summary>
+             Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailuyFeedbackAnwser, Environment, MedicalAnswer
+             NavigationSource, RecAction, RiskLevel, SunExposure, SystemCheckerAnswer and WorkLevel
+            </summary>
+        </member>
         <member name="M:KenzenAPI.Controllers.UserController.Login(KenzenAPI.Classes.Models.Login)">
             <summary>
              Accepts a Login object as JSON | Returns an User object
