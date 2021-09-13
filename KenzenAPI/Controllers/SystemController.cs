@@ -29,7 +29,10 @@ namespace KenzenAPI.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        ///  Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailuyFeedbackAnwser, Environment, MedicalAnswer
+        ///  NavigationSource, RecAction, RiskLevel, SunExposure, SystemCheckerAnswer and WorkLevel
+        /// </summary>
         [HttpGet]
         [APIRouteAuth("User")]
         [Route("LookupList/{LookupType}/{UserID}")]

@@ -17,6 +17,8 @@ using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
 using KenzenAPI.Classes.Lookup;
 using Microsoft.OpenApi.Models;
+using System.IO;
+using System.Reflection;
 
 namespace KenzenAPI
 {
@@ -36,6 +38,9 @@ namespace KenzenAPI
            services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v2", new OpenApiInfo { Title = "Kenzen API", Version = "V2" });
+                var xmlFile = "bin\\" + $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine("", xmlFile);
+                c.IncludeXmlComments(xmlPath);
             }); 
             services.AddControllers();
             services.AddControllersWithViews();
@@ -64,7 +69,7 @@ namespace KenzenAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+  
             app.UseRouting();
 
             app.UseAuthorization();

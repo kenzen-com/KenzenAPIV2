@@ -18,6 +18,7 @@ namespace KenzenAPI.Classes
 
         public int ID { get; set; }
         public int ClientID { get; set; }
+
         [JsonIgnore]
         public string TableName { get; set; }
 

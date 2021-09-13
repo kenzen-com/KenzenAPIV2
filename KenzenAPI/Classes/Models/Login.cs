@@ -20,8 +20,8 @@ namespace KenzenAPI.Classes.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Token { get; set; }
-        public string LastLoginUTCTime { get; set; }
-        public string PasswordUTCTime { get; set; }
+        public string LastLoginUTC { get; set; }
+        public string PasswordUTC { get; set; }
         public int ClientID { get; set; }
         public int UserID { get; set; }
         public Login()
@@ -75,8 +75,8 @@ namespace KenzenAPI.Classes.Models
 
                 oUser.UserID = (int)cmd.Parameters["@IDOut"].Value;
                 oUser.Password = cmd.Parameters["@POut"].Value.ToString();
-                oUser.PasswordUTCTime = cmd.Parameters["@DOut"].Value.ToString();
-                oUser.LastLoginUTCTime = cmd.Parameters["@LOut"].Value.ToString();
+                oUser.PasswordUTC = cmd.Parameters["@DOut"].Value.ToString();
+                oUser.LastLoginUTC = cmd.Parameters["@LOut"].Value.ToString();
                 oUser.ClientID = (int)cmd.Parameters["@COut"].Value;
                 oUser.Username = Username;
 
