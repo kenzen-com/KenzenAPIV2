@@ -475,7 +475,7 @@ namespace KenzenAPI.Classes
 
         public static string GetCnxnString(int ClientID, IConfiguration Config)
         {
-            if (ClientID > 0)
+            if (ClientID > 5)
                 return Config["CnxnString" + ClientID];
             else
                 return Config["CnxnString"];

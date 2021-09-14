@@ -32,7 +32,7 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         public IActionResult HR(HeartRate HeartRateObjectJSON)
         {
-            ProcessResult p = HeartRateObjectJSON.Save();
+            ProcessResult p = HeartRateObjectJSON.Save(Config);
             if (p.Exception == null)
                 return Ok(HeartRateObjectJSON.ID);
             else
