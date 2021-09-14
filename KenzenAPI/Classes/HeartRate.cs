@@ -42,7 +42,7 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    HeartRate oHeartRate = new HeartRate(null, null);
+                    HeartRate oHeartRate = new HeartRate();
                     oHeartRate.CBTPostRateLim_1min = dr["CBTPostRateLim_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["CBTPostRateLim_1min"]);
                     oHeartRate.StepRate_1min = dr["StepRate_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepRate_1min"]);
                     oHeartRate.StepCount_1min = dr["StepCount_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepCount_1min"]);
@@ -50,6 +50,7 @@ namespace KenzenAPI.DataClasses
                     oHeartRate.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
                     oHeartRate.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                     oHeartRate.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    oHeartRate.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
                     oHeartRate.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
                     if (!this.ContainsKey(oHeartRate.ID))
                         this.Add(oHeartRate.ID, oHeartRate);
@@ -93,6 +94,7 @@ namespace KenzenAPI.DataClasses
                     oHeartRate.HeartRateAvg5_1min = dr["HeartRateAvg5_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["HeartRateAvg5_1min"]);
                     oHeartRate.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
                     oHeartRate.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
+                    oHeartRate.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
                     oHeartRate.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
                     oHeartRate.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
                     if (!this.ContainsKey(oHeartRate.ID))
@@ -252,6 +254,9 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
 
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = this.ID;
+
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
                 cmd.Parameters["@UTC"].Value = this.UTC ?? "";
 
@@ -318,6 +323,9 @@ namespace KenzenAPI.DataClasses
 
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
+
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
                 cmd.Parameters["@UTC"].Value = this.UTC ?? "";

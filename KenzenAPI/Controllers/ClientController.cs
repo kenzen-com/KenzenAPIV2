@@ -33,7 +33,7 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-                AzureWrapper.ProcessResult oPR = ClientObjectJSON.Save(Client.GetCnxnString(ClientObjectJSON.ClientID, Config), Config["LogPath"]);
+                AzureWrapper.ProcessResult oPR = ClientObjectJSON.Save(Config);
                 if (oPR.Exception != null)
                     throw oPR.Exception;
 

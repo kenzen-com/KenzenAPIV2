@@ -85,7 +85,7 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-                ProcessResult oPR = UserPasswordObjectJSON.Save();
+                ProcessResult oPR = UserPasswordObjectJSON.Save(Config);
                 if (oPR.Exception != null)
                     throw oPR.Exception;
 
@@ -111,7 +111,7 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-                ProcessResult oPR = UserObjectJSON.Save();
+                ProcessResult oPR = UserObjectJSON.Save(Config);
                 return Ok(oPR.Result);
             }
             catch (Exception e)

@@ -100,7 +100,7 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         public IActionResult TH(TemperatureHumidity TemperatureHumidityObjectJSON)
         {
-            ProcessResult p = TemperatureHumidityObjectJSON.Save();
+            ProcessResult p = TemperatureHumidityObjectJSON.Save(Config);
             if (p.Exception == null)
                 return Ok(TemperatureHumidityObjectJSON.ID);
             else
@@ -115,7 +115,7 @@ namespace KenzenAPI.Controllers
         [HttpPost]
         public IActionResult ME(MaxEnvironmental MaxEnvironmentalObjectJSON)
         {
-            ProcessResult p = MaxEnvironmentalObjectJSON.Save();
+            ProcessResult p = MaxEnvironmentalObjectJSON.Save(Config);
             if (p.Exception == null)
                 return Ok(MaxEnvironmentalObjectJSON.ID);
             else

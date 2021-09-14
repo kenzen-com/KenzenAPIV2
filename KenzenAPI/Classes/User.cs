@@ -295,8 +295,9 @@ namespace KenzenAPI.DataClasses
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save()
+        public ProcessResult Save(IConfiguration config)
         {
+            Config = config;
             string CnxnString = Config["CnxnString"];
             string LogPath = Config["LogPath"];
 

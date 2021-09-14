@@ -70,7 +70,7 @@ namespace KenzenAPI.DataClasses
             {
                 foreach (MaxEnvironmental o in this.Values)
                 {
-                    oPR = o.Save();
+                    oPR = o.Save(Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -194,8 +194,9 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save()
+        public ProcessResult Save(IConfiguration config)
         {
+            Config = config;
             ProcessResult oPR = new ProcessResult();
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -212,10 +213,10 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
 
-                cmd.Parameters.Add(new SqlParameter("@PredictedMaxTemp", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@PredictedMaxTemp", SqlDbType.Money));
                 cmd.Parameters["@PredictedMaxTemp"].Value = this.PredictedMaxTemp;
 
-                cmd.Parameters.Add(new SqlParameter("@PredictedMaxRH", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@PredictedMaxRH", SqlDbType.Money));
                 cmd.Parameters["@PredictedMaxRH"].Value = this.PredictedMaxRH;
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));

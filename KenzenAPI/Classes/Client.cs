@@ -70,7 +70,7 @@ namespace KenzenAPI.Classes
             {
                 foreach (Client o in this.Values)
                 {
-                    oPR = o.Save(CnxnString, LogPath);
+                    oPR = o.Save(Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -240,10 +240,11 @@ namespace KenzenAPI.Classes
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save(string CnxnString, string LogPath)
+        public ProcessResult Save(IConfiguration config)
         {
+            Config = config;
             ProcessResult oPR = new ProcessResult();
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
             try
             {
 

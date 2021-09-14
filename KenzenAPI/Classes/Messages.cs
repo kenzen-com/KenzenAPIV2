@@ -66,7 +66,7 @@ namespace KenzenAPI.Classes
             {
                 foreach (Message o in this.Values)
                 {
-                    oPR = o.Save();
+                    oPR = o.Save(Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -172,8 +172,9 @@ namespace KenzenAPI.Classes
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save()
+        public ProcessResult Save(IConfiguration config)
         {
+            Config = config;
             ProcessResult oPR = new ProcessResult();
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(this.ClientID, Config));
             try

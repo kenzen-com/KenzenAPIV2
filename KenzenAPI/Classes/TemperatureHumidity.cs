@@ -26,7 +26,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spTemperatureHumiditysFetch", Cnxn);
+                SqlCommand cmd = new SqlCommand("spTemperatureHumiditiesFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 Cnxn.Open();
@@ -72,7 +72,7 @@ namespace KenzenAPI.DataClasses
             {
                 foreach (TemperatureHumidity o in this.Values)
                 {
-                    oPR = o.Save();
+                    oPR = o.Save(Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -219,8 +219,9 @@ namespace KenzenAPI.DataClasses
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save()
+        public ProcessResult Save(IConfiguration config)
         {
+            Config = config;
             ProcessResult oPR = new ProcessResult();
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -237,19 +238,19 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
                 cmd.Parameters["@UTC"].Value = this.UTC ?? "";
 
-                cmd.Parameters.Add(new SqlParameter("@SkinRH109_1min", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@SkinRH109_1min", SqlDbType.Money));
                 cmd.Parameters["@SkinRH109_1min"].Value = this.SkinRH109_1min;
 
                 cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
                 cmd.Parameters["@GMT"].Value = this.GMT;
 
-                cmd.Parameters.Add(new SqlParameter("@AmbientRH110_1min", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@AmbientRH110_1min", SqlDbType.Money));
                 cmd.Parameters["@AmbientRH110_1min"].Value = this.AmbientRH110_1min;
 
-                cmd.Parameters.Add(new SqlParameter("@AmbientTemp110_1min", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@AmbientTemp110_1min", SqlDbType.Money));
                 cmd.Parameters["@AmbientTemp110_1min"].Value = this.AmbientTemp110_1min;
 
-                cmd.Parameters.Add(new SqlParameter("@SkinTemp109_1min", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@SkinTemp109_1min", SqlDbType.Money));
                 cmd.Parameters["@SkinTemp109_1min"].Value = this.SkinTemp109_1min;
 
                 cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
@@ -258,7 +259,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
 
-                cmd.Parameters.Add(new SqlParameter("@MaxTotalAcc_1min", SqlDbType.Money, 8));
+                cmd.Parameters.Add(new SqlParameter("@MaxTotalAcc_1min", SqlDbType.Money));
                 cmd.Parameters["@MaxTotalAcc_1min"].Value = this.MaxTotalAcc_1min;
 
                 // assign output param
