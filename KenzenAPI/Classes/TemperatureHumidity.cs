@@ -26,7 +26,7 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spTemperatureHumiditiesFetch", Cnxn);
+                SqlCommand cmd = new SqlCommand("spTemperatureHumiditiesFetchByClient", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 Cnxn.Open();
@@ -171,7 +171,7 @@ namespace KenzenAPI.DataClasses
             Config = config;
         }
 
-        public TemperatureHumidity(int TemperatureHumidityID)
+        public TemperatureHumidity(int ID)
         {
             // fill props from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -181,8 +181,8 @@ namespace KenzenAPI.DataClasses
                 SqlCommand cmd = new SqlCommand("spTemperatureHumidityInfoFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@TemperatureHumidityID", SqlDbType.Int));
-                cmd.Parameters["@TemperatureHumidityID"].Value = TemperatureHumidityID;
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = ID;
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -236,7 +236,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@SkinRH109_1min", SqlDbType.Money));
                 cmd.Parameters["@SkinRH109_1min"].Value = this.SkinRH109_1min;
@@ -246,6 +246,9 @@ namespace KenzenAPI.DataClasses
 
                 cmd.Parameters.Add(new SqlParameter("@AmbientRH110_1min", SqlDbType.Money));
                 cmd.Parameters["@AmbientRH110_1min"].Value = this.AmbientRH110_1min;
+
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@AmbientTemp110_1min", SqlDbType.Money));
                 cmd.Parameters["@AmbientTemp110_1min"].Value = this.AmbientTemp110_1min;

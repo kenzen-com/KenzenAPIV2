@@ -223,7 +223,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@AlertCounter"].Value = this.AlertCounter;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 // assign output param
                 cmd.Parameters.Add(new SqlParameter("@AlertIDOut", SqlDbType.Int));

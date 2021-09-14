@@ -87,7 +87,7 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    HeartRate oHeartRate = new HeartRate(null, null);
+                    HeartRate oHeartRate = new HeartRate();
                     oHeartRate.CBTPostRateLim_1min = dr["CBTPostRateLim_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["CBTPostRateLim_1min"]);
                     oHeartRate.StepRate_1min = dr["StepRate_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepRate_1min"]);
                     oHeartRate.StepCount_1min = dr["StepCount_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepCount_1min"]);
@@ -258,7 +258,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
                 cmd.Parameters["@TeamID"].Value = this.TeamID;
@@ -328,7 +328,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
                 cmd.Parameters["@TeamID"].Value = this.TeamID;

@@ -101,8 +101,6 @@ namespace KenzenAPI.DataClasses
         int _GMT;
         decimal _Height;
         string _LastLoginUTC;
-        int _ID;
-        int _ClientID;
         string _Username;
         string _UTC;
         string _EmailAddress;
@@ -318,7 +316,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@Username", SqlDbType.VarChar, 50));
                 cmd.Parameters["@Username"].Value = this.Username ?? "";
@@ -440,12 +438,12 @@ namespace KenzenAPI.DataClasses
         #endregion Delete
 
         #region FetchRoles
-        public static ProcessResult FetchRoles(int UserID, int ClientID, string CnxnString, string LogPath)
+        public static ProcessResult FetchRoles(int UserID, int ClientID, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             List<string> Roles = new List<string>();
 
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Config["CnxnString"]);
             try
             {
                 User u = new User(null, null);
@@ -473,13 +471,63 @@ namespace KenzenAPI.DataClasses
             catch (Exception Exc)
             {
                 oPR.Exception = Exc;
-                Log.LogErr("FetchRolesStatic", Exc.Message, LogPath);
+                Log.LogErr("FetchRolesStatic", Exc.Message, Config["LogPath"]);
             }
 
             return (oPR);
 
         }
         #endregion FetchRoles
+
+        public static List<TemperatureHumidity> FetchTemperatureHumidities(int UserID, int ClientID, IConfiguration Config)
+        {
+            List<TemperatureHumidity> oTHs = new List<TemperatureHumidity>();
+            // fetch all from db
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("spTemperatureHumiditiesFetchByUser", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+
+                cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
+                cmd.Parameters["@UserID"].Value = UserID;
+
+
+                Cnxn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    TemperatureHumidity oTemperatureHumidity = new TemperatureHumidity(null, null);
+                    oTemperatureHumidity.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oTemperatureHumidity.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    oTemperatureHumidity.SkinRH109_1min = dr["SkinRH109_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SkinRH109_1min"]);
+                    oTemperatureHumidity.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+                    oTemperatureHumidity.AmbientRH110_1min = dr["AmbientRH110_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["AmbientRH110_1min"]);
+                    oTemperatureHumidity.AmbientTemp110_1min = dr["AmbientTemp110_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["AmbientTemp110_1min"]);
+                    oTemperatureHumidity.SkinTemp109_1min = dr["SkinTemp109_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SkinTemp109_1min"]);
+                    oTemperatureHumidity.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
+                    oTemperatureHumidity.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
+                    oTemperatureHumidity.MaxTotalAcc_1min = dr["MaxTotalAcc_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["MaxTotalAcc_1min"]);
+                    oTHs.Add(oTemperatureHumidity);
+                }
+
+                dr.Close();
+                Cnxn.Close();
+            }
+            catch (Exception Exc)
+            {
+                Log.LogErr("User.TemperatureHumidityList", Exc.Message, Config["LogPath"]);
+            }
+            finally
+            {
+                if (Cnxn.State == ConnectionState.Open) Cnxn.Close();
+            }
+
+            return oTHs;
+        }
+
 
     }
 }

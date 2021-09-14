@@ -106,7 +106,44 @@ namespace KenzenAPI.Controllers
             else
                 return BadRequest(p.Exception.Message);
         }
-
+        /// <summary>
+        ///  Expects a Client ID in the URI and returns a list of TemperatureHumidities
+        /// </summary>
+        [APIBodyAuth("User")]
+        [Route("TH/{ClientID}")]
+        [HttpGet]
+        public IActionResult THFetch(int ClientID)
+        {
+            try
+            {
+                List<TemperatureHumidity> r = new List<TemperatureHumidity>();
+                r.AddRange(new TemperatureHumidityCollection(ClientID, Config).Values.ToList());
+                return Ok(r);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        /// <summary>
+        ///  Expects a Client ID and a UserID in the URI and returns a list of TemperatureHumiditys
+        /// </summary>
+        [APIBodyAuth("User")]
+        [Route("TH/{ClientID}/{UserID}")]
+        [HttpGet]
+        public IActionResult THFetch(int ClientID, int UserID)
+        {
+            try
+            {
+                List<TemperatureHumidity> r = new List<TemperatureHumidity>();
+                r.AddRange(KenzenAPI.DataClasses.User.FetchTemperatureHumidities(UserID, ClientID, Config));
+                return Ok(r);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
         /// <summary>
         ///  Expects a MaxEnvironmental object
         /// </summary>

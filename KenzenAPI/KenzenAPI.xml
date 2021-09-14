@@ -44,6 +44,16 @@
              Expects a TemperatureHumidity object
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.THFetch(System.Int32)">
+            <summary>
+             Expects a Client ID in the URI and returns a list of TemperatureHumidities
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.StatsController.THFetch(System.Int32,System.Int32)">
+            <summary>
+             Expects a Client ID and a UserID in the URI and returns a list of TemperatureHumiditys
+            </summary>
+        </member>
         <member name="M:KenzenAPI.Controllers.StatsController.ME(KenzenAPI.DataClasses.MaxEnvironmental)">
             <summary>
              Expects a MaxEnvironmental object

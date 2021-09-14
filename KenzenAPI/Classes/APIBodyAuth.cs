@@ -34,7 +34,7 @@ namespace KenzenAPI
                 int UserID = 0;
                 try
                 {
-                    UserID = Convert.ToInt32(d.CurrentUserID);
+                    UserID = Convert.ToInt32(d.UserID);
                 }
                 catch (Exception e1)
                 {

@@ -154,7 +154,7 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-                List<UserRole> u = (List<UserRole>)KenzenAPI.DataClasses.User.FetchRoles(UserID, ClientID, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
+                List<UserRole> u = (List<UserRole>)KenzenAPI.DataClasses.User.FetchRoles(UserID, ClientID, Config).ObjectProcessed;
                 return Ok(u);
             }
             catch (Exception e)

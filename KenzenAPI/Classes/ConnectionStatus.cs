@@ -234,7 +234,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@BatteryPercent"].Value = this.BatteryPercent;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
                 cmd.Parameters["@GMT"].Value = this.GMT;

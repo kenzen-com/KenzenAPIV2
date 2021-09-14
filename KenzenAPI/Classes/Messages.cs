@@ -186,7 +186,7 @@ namespace KenzenAPI.Classes
                 #region Parameters
                 // parameters for Messages
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@ClientID", SqlDbType.Int));
                 cmd.Parameters["@ClientID"].Value = this.ClientID;

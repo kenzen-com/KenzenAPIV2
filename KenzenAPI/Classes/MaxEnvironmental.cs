@@ -226,7 +226,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@GMT"].Value = this.GMT;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 // assign output param
                 cmd.Parameters.Add(new SqlParameter("@MaxEnvironmentalIDOut", SqlDbType.Int));
