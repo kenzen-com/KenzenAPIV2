@@ -1,5 +1,7 @@
 ﻿using KenzenAPI.Classes.Lookup;
 using KenzenAPI.DataClasses;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -62,17 +64,16 @@ namespace KenzenAPI
 
                 if (bOK && bAuth)
                 {
-                    httpResponse.StatusCode = HttpStatusCode.OK;
                 }
                 else
                 {
-                    httpResponse.StatusCode = HttpStatusCode.Unauthorized;
+                    filterContext.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
                 }
 
             }
             catch (Exception e1)
             {
-                httpResponse.StatusCode = HttpStatusCode.BadRequest;
+                filterContext.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
 
             return;
