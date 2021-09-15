@@ -1,9 +1,11 @@
 ﻿using KenzenAPI.Classes.Lookup;
 using KenzenAPI.DataClasses;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Http.Controllers;
@@ -11,7 +13,7 @@ using System.Web.Http.Filters;
 namespace KenzenAPI
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-    public class APIBodyAuthAttribute : AuthorizationFilterAttribute
+    public class APIBodyAuthAttribute : Attribute, Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter
     {
         private string Role = "";
         public APIBodyAuthAttribute(string RoleIn)
@@ -24,12 +26,15 @@ namespace KenzenAPI
             this.Role = RoleIn;
 
         }
-        public override void OnAuthorization(HttpActionContext actionContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var httpResponse = new System.Net.Http.HttpResponseMessage();
             try
             {
-                string sJSON = actionContext.Request.Content.ReadAsStringAsync().Result.Replace(@"\r\n", "");
+                Stream strm = filterContext.HttpContext.Request.Body;
+                StreamReader reader = new StreamReader(strm);
+                string sJSON = reader.ReadToEnd();
+
                 dynamic d = JsonConvert.DeserializeObject(sJSON);
                 int UserID = 0;
                 try
@@ -40,10 +45,10 @@ namespace KenzenAPI
                 {
                     JArray jList = (JArray)JsonConvert.DeserializeObject(sJSON);
                     List<dynamic> dList = jList.ToObject<List<dynamic>>();
-                    UserID = dList[0].CurrentUserID;
+                    UserID = dList[0].UserID;
                 }
 
-                string sToken = actionContext.Request.Headers.GetValues("Authorization").ToList()[0].ToString().Replace("Bearer ", "");
+                string sToken = filterContext.HttpContext.Request.Headers["Authorization"].ToList()[0].ToString().Replace("Bearer ", "");
                 bool bOK = Validate(sToken, UserID);
                 bool bAuth = false;
                 if (bOK)
@@ -62,14 +67,12 @@ namespace KenzenAPI
                 else
                 {
                     httpResponse.StatusCode = HttpStatusCode.Unauthorized;
-                    actionContext.Response = httpResponse;
                 }
 
             }
             catch (Exception e1)
             {
                 httpResponse.StatusCode = HttpStatusCode.BadRequest;
-                actionContext.Response = httpResponse;
             }
 
             return;

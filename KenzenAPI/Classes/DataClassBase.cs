@@ -10,11 +10,13 @@ namespace KenzenAPI.Classes
 {
     public abstract class DataClassBase
     {
-        string _UTC;
+        [JsonIgnore]
         public ILogger Logger;
+        [JsonIgnore]
         public IConfiguration Config;
         [JsonIgnore]
         internal string TableName { get; set; }
+        string _UTC;
         public string UTC
         {
             get { return (Convert.ToDateTime(_UTC).ToString("o")); }

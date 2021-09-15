@@ -1,6 +1,7 @@
 ﻿
 using KenzenAPI.Classes.Lookup;
 using KenzenAPI.DataClasses;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,7 +13,7 @@ using System.Web.Http.Filters;
 namespace KenzenAPI
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-    public class APIRouteAuthAttribute : AuthorizationFilterAttribute
+    public class APIRouteAuthAttribute : Attribute, Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter
     {
         private string Role = "";
         public APIRouteAuthAttribute(string RoleIn)
@@ -25,15 +26,15 @@ namespace KenzenAPI
             this.Role = RoleIn;
 
         }
-        public override void OnAuthorization(HttpActionContext actionContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var httpResponse = new System.Net.Http.HttpResponseMessage();
             try
             {
-                string sURL = actionContext.Request.RequestUri.ToString();
+                string sURL = filterContext.HttpContext.Request.Path.ToString();
                 int iLast = sURL.LastIndexOf("/");
                 int UserID = Convert.ToInt32(sURL.Substring(iLast).Trim().Replace("/", ""));
-                string sToken = actionContext.Request.Headers.GetValues("Authorization").ToList()[0].ToString().Replace("Bearer ", "");
+                string sToken = filterContext.HttpContext.Request.Headers["Authorization"].ToList()[0].ToString().Replace("Bearer ", "");
                 bool bOK = Validate(sToken, UserID);
                 bool bAuth = false;
                 if (bOK)
@@ -51,14 +52,12 @@ namespace KenzenAPI
                 else
                 {
                     httpResponse.StatusCode = HttpStatusCode.Unauthorized;
-                    actionContext.Response = httpResponse;
                 }
 
             }
             catch (Exception e1)
             {
                 httpResponse.StatusCode = HttpStatusCode.BadRequest;
-                actionContext.Response = httpResponse;
             }
 
             return;
