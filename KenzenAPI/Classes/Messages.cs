@@ -86,17 +86,14 @@ namespace KenzenAPI.Classes
 
 
 
-    public class Message :DataClassBase
+    public class Message : DataClassBase
     {
 
         #region Vars
 
-        int _ID;
         string _Message;
         string _MessageType;
         int _DeviceID;
-        int _ClientID;
-        string _UTC;
 
         #endregion Vars
 

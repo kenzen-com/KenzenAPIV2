@@ -4,6 +4,7 @@ using Serilog;
 using Microsoft.Extensions.Configuration;
 using KenzenAPI.Classes;
 using Newtonsoft.Json;
+using System;
 
 namespace KenzenAPI.Controllers
 {
@@ -34,15 +35,25 @@ namespace KenzenAPI.Controllers
         [Route("Send")]
         public IActionResult Send(Message MessageObjectJSON)
         {
-            string sQ = "kenzen-message-queue";
-            AzureWrapper.IO.QueueIO q = new AzureWrapper.IO.QueueIO(Config, Logger);
-            q.CreateQueueClient(Cnxn);
-            string sM = JsonConvert.SerializeObject(MessageObjectJSON);
-            AzureWrapper.ProcessResult p = q.Insert(Cnxn, sQ, sM).Result;
-            if (p.Exception == null)
-                return Ok("sent");
-            else
-                return BadRequest(p.Exception.Message);
+            AzureWrapper.ProcessResult p = new AzureWrapper.ProcessResult();
+            try
+            {
+                string sQ = "kenzen-message-queue";
+                AzureWrapper.IO.QueueIO q = new AzureWrapper.IO.QueueIO(Config, Logger);
+                q.CreateQueueClient(Cnxn);
+                string sM = JsonConvert.SerializeObject(MessageObjectJSON);
+                p = q.Insert(Cnxn, sQ, sM).Result;
+                if (p.Exception == null)
+                    return Ok("sent");
+                else
+                    return BadRequest(p.Exception.Message);
+            }
+            catch(Exception e)
+            {
+                p.Exception = e;
+            }
+
+            return Ok(p);
         }
     }
 }

@@ -50,7 +50,10 @@ namespace KenzenAPI
                 builder.AddBlobServiceClient(Configuration["PrimaryQueue:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["PrimaryQueue:queue"], preferMsi: true);
             });
- 
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +74,7 @@ namespace KenzenAPI
             }
   
             app.UseRouting();
-
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

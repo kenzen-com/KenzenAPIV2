@@ -49,6 +49,10 @@ namespace KenzenAPI
 
                 if (bOK && bAuth)
                 {
+                    filterContext.HttpContext.Response.Headers.Add("authToken", sToken);
+                    filterContext.HttpContext.Response.Headers.Add("AuthStatus", "Authorized");
+
+                    filterContext.HttpContext.Response.Headers.Add("storeAccessiblity", "Authorized");
                 }
                 else
                 {

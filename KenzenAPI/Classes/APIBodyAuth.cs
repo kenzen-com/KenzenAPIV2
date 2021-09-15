@@ -11,11 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
 namespace KenzenAPI
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-    public class APIBodyAuthAttribute : Attribute, Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter
+    public class APIBodyAuthAttribute : Attribute, IAuthorizationFilter
     {
         private string Role = "";
         public APIBodyAuthAttribute(string RoleIn)
@@ -30,13 +29,27 @@ namespace KenzenAPI
         }
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
-            var httpResponse = new System.Net.Http.HttpResponseMessage();
             try
             {
+                filterContext.HttpContext.Request.EnableBuffering();
                 Stream strm = filterContext.HttpContext.Request.Body;
-                StreamReader reader = new StreamReader(strm);
-                string sJSON = reader.ReadToEnd();
+                string sJSON = "";
 
+                using (var buffer = new MemoryStream())
+                {
+                    filterContext.HttpContext.Request.Body.CopyToAsync(buffer);
+
+                    // Move the buffer to the beginning of the stream before reading
+                    buffer.Position = 0;
+
+                    // Do the same for the original request stream
+                    if (filterContext.HttpContext.Request.Body.CanSeek && filterContext.HttpContext.Request.Body.Position != 0)
+                    {
+                        filterContext.HttpContext.Request.Body.Position = 0;
+                    }
+                    StreamReader reader = new StreamReader(buffer);
+                    sJSON = reader.ReadToEndAsync().Result;
+                }
                 dynamic d = JsonConvert.DeserializeObject(sJSON);
                 int UserID = 0;
                 try
@@ -64,6 +77,7 @@ namespace KenzenAPI
 
                 if (bOK && bAuth)
                 {
+
                 }
                 else
                 {

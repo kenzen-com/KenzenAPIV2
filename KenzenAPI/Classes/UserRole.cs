@@ -26,20 +26,18 @@ namespace KenzenAPI.DataClasses
 
                 UserRole oUserRole = new UserRole(null, null);
                 SqlCommand cmd = new SqlCommand("SELECT * FROM " + oUserRole.TableName, Cnxn);
-                cmd.Connection = new SqlConnection(Client.GetCnxnString(0, Config));
+                cmd.Connection = Cnxn;
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
+                int x = 0;
                 while (dr.Read())
                 {
-                    oUserRole = new UserRole(Logger, Config);
+                    x++;
+                    oUserRole = new UserRole();
                     oUserRole.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
-                    oUserRole.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
-                    oUserRole.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
                     oUserRole.RoleID = dr["RoleID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RoleID"]);
-                    oUserRole.UTC = dr["UTC"] == DBNull.Value ? "" : Convert.ToDateTime(dr["UTC"]).ToUniversalTime().ToString("o").Trim();
-                    if (!this.ContainsKey(oUserRole.ID))
-                        this.Add(oUserRole.ID, oUserRole);
+                    this.Add(x, oUserRole);
                 }
 
                 dr.Close();
@@ -92,7 +90,7 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
-
+        public UserRole() { }
         public UserRole(ILogger logger, IConfiguration config)
         {
             Logger = logger;
