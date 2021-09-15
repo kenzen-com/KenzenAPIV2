@@ -46,7 +46,7 @@ namespace KenzenAPI.Controllers
                 if (LoginObjectJSON == null)
                     return BadRequest("Login failed");
 
-                u = (Login)Classes.Models.Login.LogMeIn(LoginObjectJSON.ClientID, LoginObjectJSON.Username, LoginObjectJSON.Password, Config["CnxnString"], Config["LogPath"]).ObjectProcessed;
+                u = (Login)Classes.Models.Login.LogMeIn(LoginObjectJSON.ClientID, LoginObjectJSON.Username, LoginObjectJSON.Password, Logger, Config).ObjectProcessed;
                 if (u != null && u.UserID > 0)
                 {
                     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JWTKey"]));
@@ -154,7 +154,7 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-                List<UserRole> u = (List<UserRole>)KenzenAPI.DataClasses.User.FetchRoles(UserID, ClientID, Config).ObjectProcessed;
+                List<UserRole> u = (List<UserRole>)KenzenAPI.DataClasses.User.FetchRoles(UserID, ClientID, Logger, Config).ObjectProcessed;
                 return Ok(u);
             }
             catch (Exception e)
@@ -208,5 +208,27 @@ namespace KenzenAPI.Controllers
             }
         }
         #endregion Heartrates
+
+        #region TeamUsers
+        /// <summary>
+        ///  Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamUsers by Team
+        /// </summary>
+        [HttpGet]
+        [Route("TeamUsers/{ClientID}/{TeamID}")]
+        [APIRouteAuth("User")]
+        public IActionResult TeamUsers(int ClientID, int TeamID)
+        {
+            try
+            {
+                ProcessResult oPR = Team.Users(ClientID, TeamID, Logger, Config);
+                List<User> u = (List<User>)oPR.ObjectProcessed;
+                return Ok(u);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion TeamUsers
     }
 }

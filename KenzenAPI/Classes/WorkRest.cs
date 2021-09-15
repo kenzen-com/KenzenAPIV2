@@ -19,7 +19,7 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public WorkRestCollection(int ClientID, IConfiguration Config)
+        public WorkRestCollection(int ClientID, ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -59,7 +59,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("WorkRestCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("WorkRestCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -71,7 +71,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -88,7 +88,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("WorkRestCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("WorkRestCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -271,7 +271,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("WorkRestConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("WorkRestConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -364,7 +364,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("WorkRestSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("WorkRestSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -380,7 +380,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int WorkRestID, int ClientID, IConfiguration Config)
+        public static bool Delete(int WorkRestID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -399,7 +399,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("WorkRestDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("WorkRestDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

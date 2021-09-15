@@ -19,6 +19,11 @@
              Accepts a ClientID and a UserID in the Route URL | Fetches a list of Users by Client
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.ClientController.Teams(System.Int32)">
+            <summary>
+             Accepts a ClientID and a UserID in the Route URL | Fetches a list of Users by Client
+            </summary>
+        </member>
         <member name="M:KenzenAPI.Controllers.MessageController.Send(KenzenAPI.Classes.Message)">
             <summary>
              Expects a Message, sends that JSON to an Azure Queue
@@ -98,6 +103,11 @@
         <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Int32)">
             <summary>
              Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.TeamUsers(System.Int32,System.Int32)">
+            <summary>
+             Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamUsers by Team
             </summary>
         </member>
         <member name="T:KenzenAPI.Log">

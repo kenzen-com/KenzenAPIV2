@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using KenzenAPI.Classes;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace KenzenAPI.DataClasses
 {
@@ -18,7 +19,7 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public MedicalQuestionnaireCollection(int ClientID, IConfiguration Config)
+        public MedicalQuestionnaireCollection(int ClientID, ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -45,7 +46,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalQuestionnaireCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MedicalQuestionnaireCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -57,7 +58,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -74,7 +75,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalQuestionnaireCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("MedicalQuestionnaireCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -151,7 +152,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalQuestionnaireConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MedicalQuestionnaireConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -205,7 +206,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalQuestionnaireSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("MedicalQuestionnaireSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -221,7 +222,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int MedicalQuestionnaireID, int ClientID, IConfiguration Config)
+        public static bool Delete(int MedicalQuestionnaireID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -240,7 +241,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalQuestionnaireDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("MedicalQuestionnaireDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

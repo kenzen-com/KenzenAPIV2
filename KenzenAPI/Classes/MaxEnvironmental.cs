@@ -20,7 +20,7 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public MaxEnvironmentalCollection(int ClientID, IConfiguration Config)
+        public MaxEnvironmentalCollection(int ClientID, ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -51,7 +51,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MaxEnvironmentalCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MaxEnvironmentalCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -80,7 +80,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MaxEnvironmentalCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("MaxEnvironmentalCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -182,7 +182,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MaxEnvironmentalConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MaxEnvironmentalConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -248,7 +248,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MaxEnvironmentalSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("MaxEnvironmentalSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -264,7 +264,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int MaxEnvironmentalID, int ClientID, IConfiguration Config)
+        public static bool Delete(int MaxEnvironmentalID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -283,7 +283,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MaxEnvironmentalDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("MaxEnvironmentalDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

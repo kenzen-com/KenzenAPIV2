@@ -13,6 +13,8 @@ namespace KenzenAPI.DataClasses
 
     public class AlertCollection : Dictionary<int, Alert>
     {
+        ILogger Logger;
+        IConfiguration Config;
 
         #region Constructors
 
@@ -20,8 +22,11 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public AlertCollection(int ClientID, IConfiguration Config)
+        public AlertCollection(int ClientID, ILogger logger, IConfiguration config)
         {
+            Logger = logger;
+            Config = config;
+
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -51,7 +56,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("AlertCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -63,7 +68,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -80,7 +85,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("AlertCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -180,7 +185,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("AlertConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -245,7 +250,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("AlertSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -261,7 +266,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int AlertID, int ClientID, IConfiguration Config)
+        public static bool Delete(int AlertID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -280,7 +285,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("AlertDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("AlertDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

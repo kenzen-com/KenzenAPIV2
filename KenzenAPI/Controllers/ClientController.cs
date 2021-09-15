@@ -57,8 +57,30 @@ namespace KenzenAPI.Controllers
         {
             try
             {
-               AzureWrapper.ProcessResult oPR = Client.Users(ClientID, Logger, Config);
+                AzureWrapper.ProcessResult oPR = Client.Users(ClientID, Logger, Config);
                 List<User> u = (List<User>)oPR.ObjectProcessed;
+                return Ok(u);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion Users
+
+        #region Teams
+        /// <summary>
+        ///  Accepts a ClientID and a UserID in the Route URL | Fetches a list of Users by Client
+        /// </summary>
+        [HttpGet]
+        [Route("Teams/{ClientID}/{UserID}")]
+        [APIRouteAuth("User")]
+        public IActionResult Teams(int ClientID)
+        {
+            try
+            {
+                AzureWrapper.ProcessResult oPR = Client.Teams(ClientID, Logger, Config);
+                List<Team> u = (List<Team>)oPR.ObjectProcessed;
                 return Ok(u);
             }
             catch (Exception e)

@@ -25,7 +25,6 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                User oUser = new User(Logger, Config);
                 string sSQL = "spUsersFetch";
                 if (ClientID > 0)
                 {
@@ -39,28 +38,10 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
+                    User oUser = new User(null, null);
+                    oUser.FillProps(dr);
                     oUser = new User(null, null);
-                    oUser.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : dr["DateOfBirth"].ToString().Trim();
-                    oUser.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    oUser.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
-                    oUser.Username = dr["Username"] == DBNull.Value ? "" : dr["Username"].ToString().Trim();
-                    oUser.LastLoginUTC = dr["LastLoginUTC"] == DBNull.Value ? "" : dr["LastLoginUTC"].ToString().Trim();
-                    oUser.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
-                    oUser.CountryOfResidence = dr["CountryOfResidence"] == DBNull.Value ? "" : dr["CountryOfResidence"].ToString().Trim();
-                    oUser.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
-                    oUser.EmailAddress = dr["EmailAddress"] == DBNull.Value ? "" : dr["EmailAddress"].ToString().Trim();
-                    oUser.LastName = dr["LastName"] == DBNull.Value ? "" : dr["LastName"].ToString().Trim();
-                    oUser.FirstName = dr["FirstName"] == DBNull.Value ? "" : dr["FirstName"].ToString().Trim();
-                    oUser.Vest = dr["Vest"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Vest"]);
-                    oUser.Measure = dr["Measure"] == DBNull.Value ? "" : dr["Measure"].ToString().Trim();
-                    oUser.WorkDayLength = dr["WorkDayLength"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WorkDayLength"]);
-                    oUser.Height = dr["Height"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Height"]);
-                    oUser.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
-                    oUser.Gender = dr["Gender"] == DBNull.Value ? "" : dr["Gender"].ToString().Trim();
-                    oUser.Weight = dr["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Weight"]);
-                    oUser.WorkDayStart = dr["WorkDayStart"] == DBNull.Value ? "" : dr["WorkDayStart"].ToString().Trim();
-                    oUser.Platform = dr["Platform"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Platform"]);
-                    oUser.LastUpdatedUTC = dr["LastUpdatedUTC"] == DBNull.Value ? "" : dr["LastUpdatedUTC"].ToString().Trim();
+
                     if (!this.ContainsKey(oUser.ID))
                         this.Add(oUser.ID, oUser);
                 }
@@ -70,14 +51,14 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("UserCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
                 if (Cnxn.State == ConnectionState.Open) Cnxn.Close();
             }
         }
-  
+
         #endregion Constructors
 
     }
@@ -252,28 +233,7 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-
-                    this.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : dr["DateOfBirth"].ToString().Trim();
-                    this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    this.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
-                    this.Username = dr["Username"] == DBNull.Value ? "" : dr["Username"].ToString().Trim();
-                    this.LastLoginUTC = dr["LastLoginUTC"] == DBNull.Value ? "" : dr["LastLoginUTC"].ToString().Trim();
-                    this.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
-                    this.CountryOfResidence = dr["CountryOfResidence"] == DBNull.Value ? "" : dr["CountryOfResidence"].ToString().Trim();
-                    this.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
-                    this.EmailAddress = dr["EmailAddress"] == DBNull.Value ? "" : dr["EmailAddress"].ToString().Trim();
-                    this.LastName = dr["LastName"] == DBNull.Value ? "" : dr["LastName"].ToString().Trim();
-                    this.FirstName = dr["FirstName"] == DBNull.Value ? "" : dr["FirstName"].ToString().Trim();
-                    this.Vest = dr["Vest"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Vest"]);
-                    this.Measure = dr["Measure"] == DBNull.Value ? "" : dr["Measure"].ToString().Trim();
-                    this.WorkDayLength = dr["WorkDayLength"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WorkDayLength"]);
-                    this.Height = dr["Height"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Height"]);
-                    this.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
-                    this.Gender = dr["Gender"] == DBNull.Value ? "" : dr["Gender"].ToString().Trim();
-                    this.Weight = dr["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Weight"]);
-                    this.WorkDayStart = dr["WorkDayStart"] == DBNull.Value ? "" : dr["WorkDayStart"].ToString().Trim();
-                    this.Platform = dr["Platform"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Platform"]);
-                    this.LastUpdatedUTC = dr["LastUpdatedUTC"] == DBNull.Value ? "" : dr["LastUpdatedUTC"].ToString().Trim();
+                    FillProps(dr);
                 }
 
                 dr.Close();
@@ -281,7 +241,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserConstructor", Exc.Message, LogPath);
+                Logger.Error("UserConstructor", Exc.Message, LogPath);
             }
             finally
             {
@@ -292,6 +252,32 @@ namespace KenzenAPI.DataClasses
         }
 
         #endregion Constructors
+
+        public void FillProps(SqlDataReader dr)
+        {
+            this.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : dr["DateOfBirth"].ToString().Trim();
+            this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+            this.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+            this.Username = dr["Username"] == DBNull.Value ? "" : dr["Username"].ToString().Trim();
+            this.LastLoginUTC = dr["LastLoginUTC"] == DBNull.Value ? "" : dr["LastLoginUTC"].ToString().Trim();
+            this.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
+            this.CountryOfResidence = dr["CountryOfResidence"] == DBNull.Value ? "" : dr["CountryOfResidence"].ToString().Trim();
+            this.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+            this.EmailAddress = dr["EmailAddress"] == DBNull.Value ? "" : dr["EmailAddress"].ToString().Trim();
+            this.LastName = dr["LastName"] == DBNull.Value ? "" : dr["LastName"].ToString().Trim();
+            this.FirstName = dr["FirstName"] == DBNull.Value ? "" : dr["FirstName"].ToString().Trim();
+            this.Vest = dr["Vest"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Vest"]);
+            this.Measure = dr["Measure"] == DBNull.Value ? "" : dr["Measure"].ToString().Trim();
+            this.WorkDayLength = dr["WorkDayLength"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WorkDayLength"]);
+            this.Height = dr["Height"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Height"]);
+            this.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
+            this.Gender = dr["Gender"] == DBNull.Value ? "" : dr["Gender"].ToString().Trim();
+            this.Weight = dr["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Weight"]);
+            this.WorkDayStart = dr["WorkDayStart"] == DBNull.Value ? "" : dr["WorkDayStart"].ToString().Trim();
+            this.Platform = dr["Platform"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Platform"]);
+            this.LastUpdatedUTC = dr["LastUpdatedUTC"] == DBNull.Value ? "" : dr["LastUpdatedUTC"].ToString().Trim();
+
+        }
 
         #region Save
         public ProcessResult Save(IConfiguration config)
@@ -308,7 +294,7 @@ namespace KenzenAPI.DataClasses
                 {
                     List<User> o = new UserCollection(Logger, Config).Values.ToList();
                     User u = o.Find(q => q.Username == this.Username);
-                    if(u != null)
+                    if (u != null)
                     {
                         oPR.Result = "User already exists.";
                         return (oPR);
@@ -403,7 +389,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserSave", Exc.Message, LogPath);
+                Logger.Error("UserSave", Exc.Message, LogPath);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -436,7 +422,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserDelete", Exc.Message, LogPath);
+                Logger.Error("UserDelete", Exc.Message, LogPath);
                 return (false);
             }
             finally
@@ -449,7 +435,7 @@ namespace KenzenAPI.DataClasses
         #endregion Delete
 
         #region FetchRoles
-        public static ProcessResult FetchRoles(int UserID, int ClientID, IConfiguration Config)
+        public static ProcessResult FetchRoles(int UserID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             List<string> Roles = new List<string>();
@@ -482,7 +468,7 @@ namespace KenzenAPI.DataClasses
             catch (Exception Exc)
             {
                 oPR.Exception = Exc;
-                Log.LogErr("FetchRolesStatic", Exc.Message, Config["LogPath"]);
+                Logger.Error("FetchRolesStatic", Exc.Message, Config["LogPath"]);
             }
 
             return (oPR);
@@ -490,7 +476,7 @@ namespace KenzenAPI.DataClasses
         }
         #endregion FetchRoles
 
-        public static List<TemperatureHumidity> FetchTemperatureHumidities(int UserID, int ClientID, IConfiguration Config)
+        public static List<TemperatureHumidity> FetchTemperatureHumidities(int UserID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             List<TemperatureHumidity> oTHs = new List<TemperatureHumidity>();
             // fetch all from db
@@ -529,7 +515,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("User.TemperatureHumidityList", Exc.Message, Config["LogPath"]);
+                Logger.Error("User.TemperatureHumidityList", Exc.Message, Config["LogPath"]);
             }
             finally
             {

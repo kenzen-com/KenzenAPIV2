@@ -64,7 +64,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordCollectionConstructor", Exc.Message, LogPath);
+                Logger.Error("UserPasswordCollectionConstructor", Exc.Message, LogPath);
             }
             finally
             {
@@ -153,7 +153,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("UserPasswordConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -205,7 +205,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("UserPasswordSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -242,7 +242,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserPasswordDelete", Exc.Message, LogPath);
+                Logger.Error("UserPasswordDelete", Exc.Message, LogPath);
                 return (false);
             }
             finally

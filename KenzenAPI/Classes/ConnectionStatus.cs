@@ -10,17 +10,21 @@ using Serilog;
 
 namespace KenzenAPI.DataClasses
 {
-    public class ConnectionStatuCollection : Dictionary<int, ConnectionStatus>
+    public class ConnectionStatusCollection : Dictionary<int, ConnectionStatus>
     {
-
+        ILogger Logger;
+        IConfiguration Config;
         #region Constructors
 
-        public ConnectionStatuCollection()
+        public ConnectionStatusCollection()
         {
         }
 
-        public ConnectionStatuCollection(int ClientID, IConfiguration Config)
+        public ConnectionStatusCollection(ILogger logger, IConfiguration config, int ClientID)
         {
+            Logger = logger;
+            Config = config;
+
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -51,7 +55,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("ConnectionStatuCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("ConnectionStatuCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -80,7 +84,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("ConnectionStatusCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("ConnectionStatusCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -199,7 +203,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("ConnectionStatuConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("ConnectionStatuConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -268,7 +272,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("ConnectionStatuSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("ConnectionStatuSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -284,7 +288,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int ConnectionStatusID, int ClientID, IConfiguration Config)
+        public static bool Delete(int ConnectionStatusID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -303,7 +307,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("ConnectionStatuDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("ConnectionStatuDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

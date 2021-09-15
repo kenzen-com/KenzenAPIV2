@@ -19,7 +19,7 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public DailyFeedbackCollection(int ClientID, IConfiguration Config)
+        public DailyFeedbackCollection(ILogger Logger, IConfiguration Config, int ClientID)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -50,7 +50,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("DailyFeedbackCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("DailyFeedbackCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -62,7 +62,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -79,7 +79,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("DailyFeedbackCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("DailyFeedbackCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -178,7 +178,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("DailyFeedbackConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("DailyFeedbackConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -244,7 +244,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("DailyFeedbackSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("DailyFeedbackSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -260,7 +260,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int DailyFeedbackID, int ClientID, IConfiguration Config)
+        public static bool Delete(int DailyFeedbackID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -279,7 +279,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("DailyFeedbackDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("DailyFeedbackDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

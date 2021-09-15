@@ -51,7 +51,6 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                KenzenAPI.Log.LogErr("ClientCollectionConstructor", Exc.Message, Config["LogPath"]);
                 Logger.Error("ClientCollectionConstructor:" + Exc.Message);
             }
             finally
@@ -80,7 +79,6 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                KenzenAPI.Log.LogErr("ClientCollection Save", Exc.Message, Config["LogPath"]);
                 Logger.Error("ClientCollection Save:" + Exc.Message);
                 oPR.Exception = Exc;
                 return (oPR);
@@ -226,7 +224,6 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                KenzenAPI.Log.LogErr("ClientConstructor", Exc.Message, Config["LogPath"]);
                 Logger.Error("ClientConstructor:" + Exc.Message);
             }
             finally
@@ -322,7 +319,6 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                KenzenAPI.Log.LogErr("ClientSave", Exc.Message, Config["LogPath"]);
                 Logger.Error("ClientSave:" + Exc.Message);
 
                 oPR.Exception = Exc;
@@ -383,8 +379,6 @@ namespace KenzenAPI.Classes
         #endregion FillProps
 
         #region Delete
-
-
         public bool Delete()
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -404,7 +398,6 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                KenzenAPI.Log.LogErr("ClientDelete", Exc.Message, Config["LogPath"]);
                 Logger.Error("ClientDelete:" + Exc.Message);
                 return (false);
             }
@@ -416,7 +409,7 @@ namespace KenzenAPI.Classes
 
         }
         #endregion Delete
-
+        #region Users
         public static ProcessResult Users(int ClientID, ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
@@ -435,28 +428,6 @@ namespace KenzenAPI.Classes
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    oUser = new User(Logger, Config);
-                    oUser.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : dr["DateOfBirth"].ToString().Trim();
-                    oUser.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
-                    oUser.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
-                    oUser.Username = dr["Username"] == DBNull.Value ? "" : dr["Username"].ToString().Trim();
-                    oUser.LastLoginUTC = dr["LastLoginUTC"] == DBNull.Value ? "" : dr["LastLoginUTC"].ToString().Trim();
-                    oUser.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
-                    oUser.CountryOfResidence = dr["CountryOfResidence"] == DBNull.Value ? "" : dr["CountryOfResidence"].ToString().Trim();
-                    oUser.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
-                    oUser.EmailAddress = dr["EmailAddress"] == DBNull.Value ? "" : dr["EmailAddress"].ToString().Trim();
-                    oUser.LastName = dr["LastName"] == DBNull.Value ? "" : dr["LastName"].ToString().Trim();
-                    oUser.FirstName = dr["FirstName"] == DBNull.Value ? "" : dr["FirstName"].ToString().Trim();
-                    oUser.Vest = dr["Vest"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Vest"]);
-                    oUser.Measure = dr["Measure"] == DBNull.Value ? "" : dr["Measure"].ToString().Trim();
-                    oUser.WorkDayLength = dr["WorkDayLength"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WorkDayLength"]);
-                    oUser.Height = dr["Height"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Height"]);
-                    oUser.ClientID = dr["ClientID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClientID"]);
-                    oUser.Gender = dr["Gender"] == DBNull.Value ? "" : dr["Gender"].ToString().Trim();
-                    oUser.Weight = dr["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Weight"]);
-                    oUser.WorkDayStart = dr["WorkDayStart"] == DBNull.Value ? "" : dr["WorkDayStart"].ToString().Trim();
-                    oUser.Platform = dr["Platform"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Platform"]);
-                    oUser.LastUpdatedUTC = dr["LastUpdatedUTC"] == DBNull.Value ? "" : dr["LastUpdatedUTC"].ToString().Trim();
 
                     oOut.Add(oUser);
 
@@ -473,7 +444,42 @@ namespace KenzenAPI.Classes
 
             return oPR;
         }
+        #endregion Users
+        #region Teams
+        public static ProcessResult Teams(int ClientID, ILogger Logger, IConfiguration Config)
+        {
+            ProcessResult oPR = new ProcessResult();
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(0, Config));
+            try
+            {
+                List<Team> oOut = new List<Team>();
 
+                SqlCommand cmd = new SqlCommand("spTeamsByClient", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ClientID", SqlDbType.Int).Value = ClientID;
+
+                Cnxn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Team oTeam = new Team(Logger, Config);
+                    oTeam.FillProps(dr);
+                    oOut.Add(oTeam);
+                }
+                dr.Close();
+                Cnxn.Close();
+                oPR.ObjectProcessed = oOut;
+            }
+            catch (Exception Exc)
+            {
+                oPR.Exception = Exc;
+                Logger.Error(Exc.Message);
+            }
+
+            return oPR;
+        }
+        #endregion Teams
         public static string GetCnxnString(int ClientID, IConfiguration Config)
         {
             if (ClientID > 5)

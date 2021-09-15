@@ -31,12 +31,12 @@ namespace KenzenAPI.Classes.Models
             Logger = logger;
             Config = config;
         }
-        public static ProcessResult LogMeIn(int ClientID, string Username, string Password, string CnxnString, string LogPath)
+        public static ProcessResult LogMeIn(int ClientID, string Username, string Password, ILogger Logger, IConfiguration Config)
         {
 
             Login oUser = new Login(null, null);
             ProcessResult oPR = new ProcessResult();
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(1, Config));
             try
             {
 
@@ -87,7 +87,7 @@ namespace KenzenAPI.Classes.Models
             }
             catch (Exception Exc)
             {
-                Log.LogErr("Login.LogMeIn", Exc.Message, LogPath);
+                Logger.Error("Login.LogMeIn", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";

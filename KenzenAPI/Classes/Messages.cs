@@ -47,7 +47,7 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MessageCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MessageCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -76,7 +76,7 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MessageCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("MessageCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -155,7 +155,7 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MessageConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("MessageConstructor", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
             }
             finally
@@ -217,7 +217,7 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MessageSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("MessageSave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -232,7 +232,7 @@ namespace KenzenAPI.Classes
 
         #region Delete
 
-        public static bool Delete(int ID, int ClientID, IConfiguration Config)
+        public static bool Delete(int ID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -251,7 +251,7 @@ namespace KenzenAPI.Classes
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MessageDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("MessageDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

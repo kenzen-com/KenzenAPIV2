@@ -13,10 +13,10 @@ namespace KenzenAPI.DataClasses
 
     public class HeartRateCollection : Dictionary<int, HeartRate>
     {
-
-        #region Constructors
         ILogger Logger;
         IConfiguration Config;
+        #region Constructors
+
         public HeartRateCollection(ILogger logger, IConfiguration config, int ClientID)
         {
             Logger = logger;
@@ -61,7 +61,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateCollectionConstructor", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
             }
             finally
@@ -106,7 +106,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateCollectionConstructor", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
             }
 
@@ -133,7 +133,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateCollection Save", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
                 oPR.Exception = Exc;
                 return (oPR);
@@ -283,7 +283,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateSave", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
 
                 oPR.Exception = Exc;
@@ -352,7 +352,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateSave", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateSave", Exc.Message, Config["LogPath"]);
                 Logger.Error(Exc.Message);
 
                 oPR.Exception = Exc;
@@ -391,7 +391,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int HeartRateID, int ClientID, IConfiguration Config)
+        public static bool Delete(int HeartRateID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -410,7 +410,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("HeartRateDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("HeartRateDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

@@ -117,7 +117,7 @@ namespace KenzenAPI.Controllers
             try
             {
                 List<TemperatureHumidity> r = new List<TemperatureHumidity>();
-                r.AddRange(new TemperatureHumidityCollection(ClientID, Config).Values.ToList());
+                r.AddRange(new TemperatureHumidityCollection(ClientID, Logger, Config).Values.ToList());
                 return Ok(r);
             }
             catch (Exception e)
@@ -136,7 +136,7 @@ namespace KenzenAPI.Controllers
             try
             {
                 List<TemperatureHumidity> r = new List<TemperatureHumidity>();
-                r.AddRange(KenzenAPI.DataClasses.User.FetchTemperatureHumidities(UserID, ClientID, Config));
+                r.AddRange(KenzenAPI.DataClasses.User.FetchTemperatureHumidities(UserID, ClientID, Logger, Config));
                 return Ok(r);
             }
             catch (Exception e)

@@ -19,7 +19,7 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public TemperatureHumidityCollection(int ClientID, IConfiguration Config)
+        public TemperatureHumidityCollection(int ClientID, ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -53,7 +53,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("TemperatureHumidityCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("TemperatureHumidityCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -65,7 +65,7 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(IConfiguration Config)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
@@ -82,7 +82,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("TemperatureHumidityCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error("TemperatureHumidityCollection Save", Exc.Message, Config["LogPath"]);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -206,7 +206,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("TemperatureHumidityConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("TemperatureHumidityConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -285,7 +285,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("TemperatureHumiditySave", Exc.Message, Config["LogPath"]);
+                Logger.Error("TemperatureHumiditySave", Exc.Message, Config["LogPath"]);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -301,7 +301,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int TemperatureHumidityID, int ClientID, IConfiguration Config)
+        public static bool Delete(int TemperatureHumidityID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -320,7 +320,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("TemperatureHumidityDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error("TemperatureHumidityDelete", Exc.Message, Config["LogPath"]);
                 return (false);
             }
             finally

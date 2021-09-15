@@ -85,7 +85,7 @@ namespace KenzenAPI
             }
             catch (Exception Exc)
             {
-                Log.LogErr("Log.LogDuration", Exc.Message, LogPath);
+              //  Logger.i("Log.LogDuration", Exc.Message, LogPath);
                 return (false);
             }
         }

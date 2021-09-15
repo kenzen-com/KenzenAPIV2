@@ -19,7 +19,7 @@ namespace KenzenAPI.DataClasses
 		{
 		}
 
-		public DailyFeedbackQuestionnaireCollection(int ClientID, IConfiguration Config)
+		public DailyFeedbackQuestionnaireCollection(int ClientID, ILogger Logger, IConfiguration Config)
 		{
 			// fetch all from db
 			SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -46,7 +46,7 @@ namespace KenzenAPI.DataClasses
 			}
 			catch (Exception Exc)
 			{
-				Log.LogErr("DailyFeedbackQuestionnaireCollectionConstructor", Exc.Message, Config["LogPath"]);
+				Logger.Error("DailyFeedbackQuestionnaireCollectionConstructor", Exc.Message, Config["LogPath"]);
 			}
 			finally
 			{
@@ -58,7 +58,7 @@ namespace KenzenAPI.DataClasses
 
 
 		#region Save
-		public ProcessResult Save(IConfiguration Config)
+		public ProcessResult Save(ILogger Logger, IConfiguration Config)
 		{
 			ProcessResult oPR = new ProcessResult();
 			try
@@ -75,7 +75,7 @@ namespace KenzenAPI.DataClasses
 			}
 			catch (Exception Exc)
 			{
-				Log.LogErr("DailyFeedbackQuestionnaireCollection Save", Exc.Message, Config["LogPath"]);
+				Logger.Error("DailyFeedbackQuestionnaireCollection Save", Exc.Message, Config["LogPath"]);
 				oPR.Exception = Exc;
 				return (oPR);
 			}
@@ -147,7 +147,7 @@ namespace KenzenAPI.DataClasses
 			}
 			catch (Exception Exc)
 			{
-				Log.LogErr("DailyFeedbackQuestionnaireConstructor", Exc.Message, Config["LogPath"]);
+				Logger.Error("DailyFeedbackQuestionnaireConstructor", Exc.Message, Config["LogPath"]);
 			}
 			finally
 			{
@@ -201,7 +201,7 @@ namespace KenzenAPI.DataClasses
 			}
 			catch (Exception Exc)
 			{
-				Log.LogErr("DailyFeedbackQuestionnaireSave", Exc.Message, Config["LogPath"]);
+				Logger.Error("DailyFeedbackQuestionnaireSave", Exc.Message, Config["LogPath"]);
 
 				oPR.Exception = Exc;
 				oPR.Result += "Error";
@@ -217,7 +217,7 @@ namespace KenzenAPI.DataClasses
 		#region Delete
 
 
-		public static bool Delete(int DailyFeedbackQuestionnaireID, int ClientID, IConfiguration Config)
+		public static bool Delete(int DailyFeedbackQuestionnaireID, int ClientID, ILogger Logger, IConfiguration Config)
 		{
 			SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
 			try
@@ -236,7 +236,7 @@ namespace KenzenAPI.DataClasses
 			}
 			catch (Exception Exc)
 			{
-				Log.LogErr("DailyFeedbackQuestionnaireDelete", Exc.Message, Config["LogPath"]);
+				Logger.Error("DailyFeedbackQuestionnaireDelete", Exc.Message, Config["LogPath"]);
 				return (false);
 			}
 			finally

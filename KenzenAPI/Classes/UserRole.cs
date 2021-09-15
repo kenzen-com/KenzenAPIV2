@@ -45,7 +45,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserRoleCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error("UserRoleCollectionConstructor", Exc.Message, Config["LogPath"]);
             }
             finally
             {
@@ -149,7 +149,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserRoleSave", Exc.Message, LogPath);
+                Logger.Error("UserRoleSave", Exc.Message, LogPath);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
@@ -187,7 +187,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("UserRoleDelete", Exc.Message, LogPath);
+                Logger.Error("UserRoleDelete", Exc.Message, LogPath);
                 return (false);
             }
             finally
