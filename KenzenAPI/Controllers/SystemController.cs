@@ -128,5 +128,21 @@ namespace KenzenAPI.Controllers
             var stream = System.IO.File.OpenRead(path);
             return new FileStreamResult(stream, "application/octet-stream");
         }
+
+
+        [HttpGet]
+        [APIRouteAuth("User")]
+        [Route("VersionInfo/{UserID}")]
+        public IActionResult VersionInfo()
+        {
+            string sJSON = @"'minSuggestedFirmwareVersion' : '4.46'," + System.Environment.NewLine +
+            "'minRequiredFirmwareVersion' : '4.46'," + System.Environment.NewLine +
+            "'minSuggestedAndroidMobileAppVersion' : '2.1.08.15.0'," + System.Environment.NewLine +
+            "'minRequiredAndroidMobileAppVersion' : '2.1.08.15.0'," + System.Environment.NewLine +
+            "'minSuggestediOSMobileAppVersion' : '2.0.9'," + System.Environment.NewLine +
+            "'minRequirediOSMobileAppVersion' : '2.0.9'";
+
+            return Ok(sJSON);
+        }
     }
 }
