@@ -9,6 +9,7 @@ using System.Configuration;
 using KenzenAPI.Classes;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System.Linq;
 
 namespace KenzenAPI.DataClasses
 {
@@ -303,6 +304,16 @@ namespace KenzenAPI.DataClasses
             SqlConnection Cnxn = new SqlConnection(CnxnString);
             try
             {
+                if (this.ID == 0)
+                {
+                    List<User> o = new UserCollection(Logger, Config).Values.ToList();
+                    User u = o.Find(q => q.Username == this.Username);
+                    if(u != null)
+                    {
+                        oPR.Result = "User already exists.";
+                        return (oPR);
+                    }
+                }
 
                 SqlCommand cmd = new SqlCommand("spUserSave", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
