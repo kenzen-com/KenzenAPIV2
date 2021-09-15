@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using KenzenAPI.Classes;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace KenzenAPI.Controllers
 {
@@ -135,14 +136,8 @@ namespace KenzenAPI.Controllers
         [Route("VersionInfo/{UserID}")]
         public IActionResult VersionInfo()
         {
-            string sJSON = @"'minSuggestedFirmwareVersion' : '4.46'," + System.Environment.NewLine +
-            "'minRequiredFirmwareVersion' : '4.46'," + System.Environment.NewLine +
-            "'minSuggestedAndroidMobileAppVersion' : '2.1.08.15.0'," + System.Environment.NewLine +
-            "'minRequiredAndroidMobileAppVersion' : '2.1.08.15.0'," + System.Environment.NewLine +
-            "'minSuggestediOSMobileAppVersion' : '2.0.9'," + System.Environment.NewLine +
-            "'minRequirediOSMobileAppVersion' : '2.0.9'";
-
-            return Ok(sJSON);
+            
+            return Ok(JsonConvert.SerializeObject(new KenzenAPI.Classes.Models.Version()));
         }
     }
 }
