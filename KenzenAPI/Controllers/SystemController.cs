@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using KenzenAPI.Classes;
+using System.IO;
 
 namespace KenzenAPI.Controllers
 {
@@ -116,6 +117,16 @@ namespace KenzenAPI.Controllers
             sOut += new WorkRest(null, null).ToJson() + System.Environment.NewLine;
 
             return Ok(sOut);
+        }
+
+        [HttpGet]
+        [APIRouteAuth("User")]
+        [Route("DownloadApplication/{UserID}")]
+        public async Task<FileStreamResult> DownloadApplication()
+        {
+            var path = "~/Files/Kenzen.zip";
+            var stream = System.IO.File.OpenRead(path);
+            return new FileStreamResult(stream, "application/octet-stream");
         }
     }
 }

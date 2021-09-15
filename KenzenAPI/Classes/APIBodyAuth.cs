@@ -3,8 +3,10 @@ using KenzenAPI.DataClasses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +18,7 @@ namespace KenzenAPI
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class APIBodyAuthAttribute : Attribute, IAuthorizationFilter
     {
+        IConfiguration Configuration;
         private string Role = "";
         public APIBodyAuthAttribute(string RoleIn)
         {
@@ -25,6 +28,11 @@ namespace KenzenAPI
         void Init(string RoleIn)
         {
             this.Role = RoleIn;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            Configuration = builder.Build();
+
 
         }
         public void OnAuthorization(AuthorizationFilterContext filterContext)
@@ -87,7 +95,9 @@ namespace KenzenAPI
             }
             catch (Exception e1)
             {
-                filterContext.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+
+                filterContext.HttpContext.Response.WriteAsync(e1.Message);
+                filterContext.Result = new StatusCodeResult(StatusCodes.Status417ExpectationFailed);
             }
 
             return;
