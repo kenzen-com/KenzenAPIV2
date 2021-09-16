@@ -377,5 +377,50 @@ namespace KenzenAPI.DataClasses
             return oPR;
         }
         #endregion Users
+
+        #region AssignToTeam
+        public static ProcessResult AssignToTeam(int ClientID, int TeamID, int UserID, ILogger Logger, IConfiguration Config)
+        {
+            ProcessResult oPR = new ProcessResult();
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("spTeamUserAssign", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                #region Parameters
+                // parameters for Team
+                cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
+                cmd.Parameters["@TeamID"].Value = TeamID;
+
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = UserID;
+
+                #endregion Parameters
+
+                Cnxn.Open();
+                cmd.ExecuteNonQuery();
+                Cnxn.Close();
+
+                oPR.Result += "Assigned";
+                return (oPR);
+
+            }
+            catch (Exception Exc)
+            {
+                Logger.Error(Exc.Message);
+
+                oPR.Exception = Exc;
+                oPR.Result += "Error";
+                return (oPR);
+            }
+            finally
+            {
+                if (Cnxn.State == ConnectionState.Open) Cnxn.Close();
+            }
+        }
+        #endregion Save
+
     }
 }

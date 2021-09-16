@@ -252,5 +252,27 @@ namespace KenzenAPI.Controllers
             }
         }
         #endregion TeamUsers
+
+        #region TeamUser
+        /// <summary>
+        ///  Accepts a TeamUser object | Assigns a User to a Team
+        /// </summary>
+        [HttpPost]
+        [Route("TeamUser")]
+        [APIRouteAuth("User")]
+        public IActionResult TeamUser(TeamUser TeamUser)
+        {
+            try
+            {
+                ProcessResult oPR = Team.AssignToTeam(TeamUser.ClientID, TeamUser.TeamID, TeamUser.UserID, Logger, Config);
+                return Ok(oPR.Result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion TeamUsers
+
     }
 }

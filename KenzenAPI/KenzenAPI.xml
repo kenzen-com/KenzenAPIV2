@@ -130,6 +130,11 @@
              Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamUsers by Team
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.UserController.TeamUser(KenzenAPI.Classes.Models.TeamUser)">
+            <summary>
+             Accepts a TeamUser object | Assigns a User to a Team
+            </summary>
+        </member>
         <member name="T:KenzenAPI.Log">
             <summary>
             Logs errors, events
