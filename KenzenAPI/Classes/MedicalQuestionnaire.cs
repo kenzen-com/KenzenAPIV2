@@ -19,10 +19,10 @@ namespace KenzenAPI.DataClasses
         {
         }
 
-        public MedicalQuestionnaireCollection(int ClientID, ILogger Logger, IConfiguration Config)
+        public MedicalQuestionnaireCollection(ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
-            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(1, Config));
             try
             {
 

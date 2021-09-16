@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace KenzenAPI.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(ClientController))]
     [Route("[controller]")]
     public class ClientController : Controller
     {

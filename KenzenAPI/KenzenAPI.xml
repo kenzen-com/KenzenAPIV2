@@ -66,8 +66,23 @@
         </member>
         <member name="M:KenzenAPI.Controllers.SystemController.LookupList(System.String)">
             <summary>
-             Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailuyFeedbackAnwser, Environment, MedicalAnswer
+             Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailyFeedbackAnswer, Environment
              NavigationSource, RecAction, RiskLevel, SunExposure, SystemCheckerAnswer and WorkLevel
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.SystemController.MQFetch">
+            <summary>
+             Expects a User ID in the URI and returns a list of MedicalQuestionnaire
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.SystemController.MAFetch">
+            <summary>
+             Expects a User ID in the URI and returns a list of MedicalAnswers
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.SystemController.LookupListTypes">
+            <summary>
+             Expects a User ID in the URI and returns a list of LookupListTypes
             </summary>
         </member>
         <member name="M:KenzenAPI.Controllers.UserController.Login(KenzenAPI.Classes.Models.Login)">
@@ -103,6 +118,11 @@
         <member name="M:KenzenAPI.Controllers.UserController.Heartrates(System.Int32)">
             <summary>
              Accepts a UserID in the Route URL | Fetches a list of HeartRates for the application
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.UserMedicalAnswers(System.Int32,System.Int32)">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a list of UserMedicalAnswers 
             </summary>
         </member>
         <member name="M:KenzenAPI.Controllers.UserController.TeamUsers(System.Int32,System.Int32)">

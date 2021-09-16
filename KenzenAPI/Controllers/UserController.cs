@@ -209,6 +209,28 @@ namespace KenzenAPI.Controllers
         }
         #endregion Heartrates
 
+        #region MedicalAnswers
+
+        /// <summary>
+        ///  Accepts a UserID in the Route URL | Fetches a list of UserMedicalAnswers 
+        /// </summary>
+        [HttpGet]
+        [Route("MedicalAnswers/{ClientID}/{UserID}")]
+        [APIRouteAuth("User")]
+        public IActionResult UserMedicalAnswers(int ClientID, int UserID)
+        {
+            try
+            {
+                List<UserMedicalAnswer> u = new UserMedicalAnswerCollection(ClientID, UserID, Logger, Config).Values.ToList();
+                return Ok(u);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion MedicalAnswers
+
         #region TeamUsers
         /// <summary>
         ///  Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamUsers by Team

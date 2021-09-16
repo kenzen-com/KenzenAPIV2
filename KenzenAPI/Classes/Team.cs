@@ -11,18 +11,16 @@ using System.Data.SqlClient;
 
 namespace KenzenAPI.DataClasses
 {
-    [Serializable]
+    
     public class TeamCollection : Dictionary<int, Team>
     {
-        ILogger Logger;
-        IConfiguration Config;
         #region Constructors
 
         public TeamCollection()
         {
         }
 
-        public TeamCollection(ILogger logger, IConfiguration config)
+        public TeamCollection(ILogger Logger, IConfiguration Config)
         {
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(1, Config));
@@ -55,10 +53,8 @@ namespace KenzenAPI.DataClasses
             }
         }
 
-        public TeamCollection(ILogger logger, IConfiguration config, int ClientID)
+        public TeamCollection(ILogger Logger, IConfiguration Config, int ClientID)
         {
-            Logger = logger;
-            Config = config;
 
             // fetch all from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -123,7 +119,7 @@ namespace KenzenAPI.DataClasses
     }
 
 
-    [Serializable]
+    
     public class Team : DataClassBase
     {
 

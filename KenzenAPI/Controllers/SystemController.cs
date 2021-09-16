@@ -32,7 +32,7 @@ namespace KenzenAPI.Controllers
             return View();
         }
         /// <summary>
-        ///  Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailuyFeedbackAnwser, Environment, MedicalAnswer
+        ///  Possible Lookup (list) types fetched are AlertResponse, AlertStage, Clothing, DailyFeedbackAnswer, Environment
         ///  NavigationSource, RecAction, RiskLevel, SunExposure, SystemCheckerAnswer and WorkLevel
         /// </summary>
         [HttpGet]
@@ -59,9 +59,6 @@ namespace KenzenAPI.Controllers
                     case "ENVIRONMENT":
                         Classes.Lookup.Environment e = new Classes.Lookup.Environment();
                         return Ok(e.FetchAll(Config).ObjectProcessed);
-                    case "MEDICALANSWER":
-                        MedicalAnswer f = new MedicalAnswer();
-                        return Ok(f.FetchAll(Config).ObjectProcessed);
                     case "NAVIGATIONSOURCE":
                         NavigationSource g = new NavigationSource();
                         return Ok(g.FetchAll(Config).ObjectProcessed);
@@ -136,8 +133,77 @@ namespace KenzenAPI.Controllers
         [Route("VersionInfo/{UserID}")]
         public IActionResult VersionInfo()
         {
-            
+
             return Ok(JsonConvert.SerializeObject(new KenzenAPI.Classes.Models.Version()));
         }
+        /// <summary>
+        ///  Expects a User ID in the URI and returns a list of MedicalQuestionnaire
+        /// </summary>
+        [APIBodyAuth("User")]
+        [Route("MQ/{UserID}")]
+        [HttpGet]
+        public IActionResult MQFetch()
+        {
+            try
+            {
+                List<MedicalQuestionnaire> r = new List<MedicalQuestionnaire>();
+                r.AddRange(new MedicalQuestionnaireCollection(Logger, Config).Values.ToList());
+                return Ok(r);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        /// <summary>
+        ///  Expects a User ID in the URI and returns a list of MedicalAnswers
+        /// </summary>
+        [APIBodyAuth("User")]
+        [Route("MA/{UserID}")]
+        [HttpGet]
+        public IActionResult MAFetch()
+        {
+            try
+            {
+                List<MedicalAnswer> r = new List<MedicalAnswer>();
+                r.AddRange(new MedicalAnswerCollection(Logger, Config).Values.ToList());
+                return Ok(r);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        /// <summary>
+        ///  Expects a User ID in the URI and returns a list of LookupListTypes
+        /// </summary>
+        [APIBodyAuth("User")]
+        [Route("LookupListTypes/{UserID}")]
+        [HttpGet]
+        public IActionResult LookupListTypes()
+        {
+            try
+            {
+                List<string> r = new List<string>();
+                r.Add("AlertResponse"); 
+                r.Add("AlertStage");
+                r.Add("Clothing"); 
+                r.Add("DailyFeedbackAnswer"); 
+                r.Add("Environment");
+                r.Add("NavigationSource"); 
+                r.Add("RecAction"); 
+                r.Add("RiskLevel"); 
+                r.Add("SunExposure"); 
+                r.Add("SystemCheckerAnswer"); 
+                r.Add("WorkLevel)");
+                return Ok(r);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
     }
 }

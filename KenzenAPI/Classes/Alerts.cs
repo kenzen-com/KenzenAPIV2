@@ -94,7 +94,7 @@ namespace KenzenAPI.DataClasses
     }
 
 
-    [Serializable]
+    
     public class Alert : DataClassBase
     {
 
