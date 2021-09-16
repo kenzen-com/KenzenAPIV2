@@ -125,6 +125,21 @@
              Accepts a UserID in the Route URL | Fetches a list of UserMedicalAnswers 
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.UserController.MedicalAnswer(KenzenAPI.DataClasses.MedicalAnswer)">
+            <summary>
+             Accepts a MedicalAnswer as JSON
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.WorkRests(System.Int32)">
+            <summary>
+             Accepts a UserID in the Route URL | Fetches a list of WorkRests for the Client
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.WorkRest(KenzenAPI.DataClasses.WorkRest)">
+            <summary>
+             Accepts a WorkRest as JSON
+            </summary>
+        </member>
         <member name="M:KenzenAPI.Controllers.UserController.TeamUsers(System.Int32,System.Int32)">
             <summary>
              Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamUsers by Team

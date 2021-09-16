@@ -27,8 +27,13 @@ namespace KenzenAPI.DataClasses
             try
             {
 
-                SqlCommand cmd = new SqlCommand("spWorkRestsFetch", Cnxn);
+                SqlCommand cmd = new SqlCommand("spWorkRestsByClient", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
+
+
+                cmd.Parameters.Add(new SqlParameter("@ClientID", SqlDbType.Int));
+                cmd.Parameters["@ClientID"].Value = ClientID;
+
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();

@@ -59,14 +59,14 @@ namespace KenzenAPI.DataClasses
 
 
         #region Save
-        public ProcessResult Save(string CnxnString, string LogPath)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             try
             {
                 foreach (MedicalAnswer o in this.Values)
                 {
-                    oPR = o.Save(CnxnString, LogPath);
+                    oPR = o.Save(Logger, Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -76,7 +76,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalAnswerCollection Save", Exc.Message, LogPath);
+                Logger.Error(Exc.Message);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -166,10 +166,10 @@ namespace KenzenAPI.DataClasses
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save(string CnxnString, string LogPath)
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
-            SqlConnection Cnxn = new SqlConnection(CnxnString);
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
 
@@ -207,7 +207,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Log.LogErr("MedicalAnswerSave", Exc.Message, LogPath);
+                Logger.Error(Exc.Message);
 
                 oPR.Exception = Exc;
                 oPR.Result += "Error";

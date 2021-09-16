@@ -229,7 +229,75 @@ namespace KenzenAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        /// <summary>
+        ///  Accepts a MedicalAnswer as JSON
+        /// </summary>
+        [HttpPost]
+        [APIRouteAuth("User")]
+        [Route("MedicalAnswer")]
+        public IActionResult MedicalAnswer(MedicalAnswer MedicalAnswerObjectJSON)
+        {
+            try
+            {
+                ProcessResult oPR = MedicalAnswerObjectJSON.Save(Logger, Config);
+                if (oPR.Exception == null)
+                    return Ok("Saved");
+                else
+                    return BadRequest(oPR.Exception.Message);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion MedicalAnswers
+
+        #region WorkRest  
+        /// <summary>
+        ///  Accepts a UserID in the Route URL | Fetches a list of WorkRests for the Client
+        /// </summary>
+        [HttpGet]
+        [Route("WorkRests/{ClientID}/{UserID}")]
+        [APIRouteAuth("User")]
+        public IActionResult WorkRests(int ClientID)
+        {
+            try
+            {
+                WorkRestCollection u = new WorkRestCollection(ClientID, Logger, Config);
+                return Ok(u);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+  
+        /// <summary>
+        ///  Accepts a WorkRest as JSON
+        /// </summary>
+        [HttpPost]
+        [APIRouteAuth("User")]
+        [Route("WorkRest")]
+        public IActionResult WorkRest(WorkRest WorkRestObjectJSON)
+        {
+            try
+            {
+                ProcessResult oPR = WorkRestObjectJSON.Save(Logger, Config);
+                if (oPR.Exception == null)
+                    return Ok("Saved");
+                else
+                    return BadRequest(oPR.Exception.Message);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        #endregion WorkRests
 
         #region TeamUsers
         /// <summary>
