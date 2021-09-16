@@ -15,7 +15,7 @@ using System.Net;
 using System.Web.Http.Controllers;
 namespace KenzenAPI
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class APIBodyAuthAttribute : Attribute, IAuthorizationFilter
     {
         IConfiguration Configuration;

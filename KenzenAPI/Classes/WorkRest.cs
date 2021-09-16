@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace KenzenAPI.DataClasses
 {
+
     public class WorkRestCollection : Dictionary<int, WorkRest>
     {
 
@@ -33,23 +34,23 @@ namespace KenzenAPI.DataClasses
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    WorkRest oWorkRest = new WorkRest(null, null);
-                    oWorkRest.userId = dr["userId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["userId"]);
-                    oWorkRest.sunExposureId = dr["sunExposureId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["sunExposureId"]);
-                    oWorkRest.latitude = dr["latitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["latitude"]);
-                    oWorkRest.wrRisklevelId = dr["wrRisklevelId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["wrRisklevelId"]);
-                    oWorkRest.clothingId = dr["clothingId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["clothingId"]);
-                    oWorkRest.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
-                    oWorkRest.workLevelId = dr["workLevelId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["workLevelId"]);
-                    oWorkRest.utcTs = dr["utcTs"] == DBNull.Value ? "" : dr["utcTs"].ToString().Trim();
-                    oWorkRest.locationKey = dr["locationKey"] == DBNull.Value ? 0 : Convert.ToInt32(dr["locationKey"]);
-                    oWorkRest.teamId = dr["teamId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["teamId"]);
-                    oWorkRest.longitude = dr["longitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["longitude"]);
-                    oWorkRest.temperature = dr["temperature"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["temperature"]);
-                    oWorkRest.location = dr["location"] == DBNull.Value ? "" : dr["location"].ToString().Trim();
-                    oWorkRest.wrRecActionId = dr["wrRecActionId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["wrRecActionId"]);
-                    oWorkRest.humidity = dr["humidity"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["humidity"]);
-                    oWorkRest.environmentId = dr["environmentId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["environmentId"]);
+                    WorkRest oWorkRest = new WorkRest();
+                    oWorkRest.ClothingID = dr["ClothingID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClothingID"]);
+                    oWorkRest.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    oWorkRest.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    oWorkRest.WorkLevelID = dr["WorkLevelID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["WorkLevelID"]);
+                    oWorkRest.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
+                    oWorkRest.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+                    oWorkRest.Temperature = dr["Temperature"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Temperature"]);
+                    oWorkRest.SunExposureID = dr["SunExposureID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["SunExposureID"]);
+                    oWorkRest.Latitude = dr["Latitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Latitude"]);
+                    oWorkRest.RecActionIdD = dr["RecActionIdD"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RecActionIdD"]);
+                    oWorkRest.RiskLevelID = dr["RiskLevelID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RiskLevelID"]);
+                    oWorkRest.LocationID = dr["LocationID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["LocationID"]);
+                    oWorkRest.Longitude = dr["Longitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Longitude"]);
+                    oWorkRest.Humidity = dr["Humidity"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Humidity"]);
+                    oWorkRest.EnvironmentID = dr["EnvironmentID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EnvironmentID"]);
+                    oWorkRest.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                     if (!this.ContainsKey(oWorkRest.ID))
                         this.Add(oWorkRest.ID, oWorkRest);
                 }
@@ -59,7 +60,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Logger.Error("WorkRestCollectionConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error(Exc.Message);
             }
             finally
             {
@@ -78,7 +79,7 @@ namespace KenzenAPI.DataClasses
             {
                 foreach (WorkRest o in this.Values)
                 {
-                    oPR = o.Save();
+                    oPR = o.Save(Logger, Config);
                     if (oPR.Exception != null)
                         throw oPR.Exception;
                 }
@@ -88,7 +89,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Logger.Error("WorkRestCollection Save", Exc.Message, Config["LogPath"]);
+                Logger.Error(Exc.Message);
                 oPR.Exception = Exc;
                 return (oPR);
             }
@@ -97,140 +98,137 @@ namespace KenzenAPI.DataClasses
     }
 
 
-
     public class WorkRest : DataClassBase
     {
 
         #region Vars
 
-        int _sunExposureId;
-        string _utcTs;
-        Decimal _latitude;
-        int _locationKey;
-        int _workLevelId;
-        int _wrRecActionId;
-        int _teamId;
-        int _environmentId;
-        int _wrRisklevelId;
-        Decimal _temperature;
-        string _location;
-        int _userId;
-        int _clothingId;
-        Decimal _humidity;
-        Decimal _longitude;
-        string _GMT;
+        int _ClothingID;
+        string _UTC;
+        int _RiskLevelID;
+        int _LocationID;
+        decimal _Temperature;
+        decimal _Humidity;
+        int _UserID;
+        decimal _Longitude;
+        int _TeamID;
+        int _ID;
+        int _RecActionIdD;
+        int _EnvironmentID;
+        decimal _Latitude;
+        int _WorkLevelID;
+        int _GMT;
+        int _SunExposureID;
 
         #endregion Vars
 
         #region Get/Sets
 
-        public int sunExposureId
+        public int ClothingID
         {
-            get { return (_sunExposureId); }
-            set { _sunExposureId = value; }
+            get { return (_ClothingID); }
+            set { _ClothingID = value; }
         }
 
-        public string utcTs
+        public string UTC
         {
-            get { return (_utcTs); }
-            set { _utcTs = value; }
+            get { return (_UTC); }
+            set { _UTC = value; }
         }
 
-        public Decimal latitude
+        public int RiskLevelID
         {
-            get { return (_latitude); }
-            set { _latitude = value; }
+            get { return (_RiskLevelID); }
+            set { _RiskLevelID = value; }
         }
 
-        public int locationKey
+        public int LocationID
         {
-            get { return (_locationKey); }
-            set { _locationKey = value; }
+            get { return (_LocationID); }
+            set { _LocationID = value; }
         }
 
-        public int workLevelId
+        public decimal Temperature
         {
-            get { return (_workLevelId); }
-            set { _workLevelId = value; }
+            get { return (_Temperature); }
+            set { _Temperature = value; }
         }
 
-        public int wrRecActionId
+        public decimal Humidity
         {
-            get { return (_wrRecActionId); }
-            set { _wrRecActionId = value; }
+            get { return (_Humidity); }
+            set { _Humidity = value; }
         }
 
-        public int teamId
+        public int UserID
         {
-            get { return (_teamId); }
-            set { _teamId = value; }
+            get { return (_UserID); }
+            set { _UserID = value; }
         }
 
-        public int environmentId
+        public decimal Longitude
         {
-            get { return (_environmentId); }
-            set { _environmentId = value; }
+            get { return (_Longitude); }
+            set { _Longitude = value; }
         }
 
-        public int wrRisklevelId
+        public int TeamID
         {
-            get { return (_wrRisklevelId); }
-            set { _wrRisklevelId = value; }
+            get { return (_TeamID); }
+            set { _TeamID = value; }
         }
 
-        public Decimal temperature
+        public int ID
         {
-            get { return (_temperature); }
-            set { _temperature = value; }
+            get { return (_ID); }
+            set { _ID = value; }
         }
 
-        public string location
+        public int RecActionIdD
         {
-            get { return (_location); }
-            set { _location = value; }
+            get { return (_RecActionIdD); }
+            set { _RecActionIdD = value; }
         }
 
-        public int userId
+        public int EnvironmentID
         {
-            get { return (_userId); }
-            set { _userId = value; }
+            get { return (_EnvironmentID); }
+            set { _EnvironmentID = value; }
         }
 
-        public int clothingId
+        public decimal Latitude
         {
-            get { return (_clothingId); }
-            set { _clothingId = value; }
+            get { return (_Latitude); }
+            set { _Latitude = value; }
         }
 
-        public Decimal humidity
+        public int WorkLevelID
         {
-            get { return (_humidity); }
-            set { _humidity = value; }
+            get { return (_WorkLevelID); }
+            set { _WorkLevelID = value; }
         }
 
-        public Decimal longitude
-        {
-            get { return (_longitude); }
-            set { _longitude = value; }
-        }
-
-        public string GMT
+        public int GMT
         {
             get { return (_GMT); }
             set { _GMT = value; }
+        }
+
+        public int SunExposureID
+        {
+            get { return (_SunExposureID); }
+            set { _SunExposureID = value; }
         }
 
         #endregion Get/Sets
 
         #region Constructors
 
-        public WorkRest(ILogger logger, IConfiguration config)
+        public WorkRest()
         {
-            Logger = logger;
-            Config = config;
         }
 
-        public WorkRest(int WorkRestID)
+        public WorkRest(int ID, ILogger Logger, IConfiguration Config)
         {
             // fill props from db
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -240,30 +238,30 @@ namespace KenzenAPI.DataClasses
                 SqlCommand cmd = new SqlCommand("spWorkRestInfoFetch", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@WorkRestID", SqlDbType.Int));
-                cmd.Parameters["@WorkRestID"].Value = WorkRestID;
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = ID;
 
                 Cnxn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
 
-                    this.userId = dr["userId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["userId"]);
-                    this.sunExposureId = dr["sunExposureId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["sunExposureId"]);
-                    this.latitude = dr["latitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["latitude"]);
-                    this.wrRisklevelId = dr["wrRisklevelId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["wrRisklevelId"]);
-                    this.clothingId = dr["clothingId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["clothingId"]);
-                    this.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
-                    this.workLevelId = dr["workLevelId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["workLevelId"]);
-                    this.utcTs = dr["utcTs"] == DBNull.Value ? "" : dr["utcTs"].ToString().Trim();
-                    this.locationKey = dr["locationKey"] == DBNull.Value ? 0 : Convert.ToInt32(dr["locationKey"]);
-                    this.teamId = dr["teamId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["teamId"]);
-                    this.longitude = dr["longitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["longitude"]);
-                    this.temperature = dr["temperature"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["temperature"]);
-                    this.location = dr["location"] == DBNull.Value ? "" : dr["location"].ToString().Trim();
-                    this.wrRecActionId = dr["wrRecActionId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["wrRecActionId"]);
-                    this.humidity = dr["humidity"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["humidity"]);
-                    this.environmentId = dr["environmentId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["environmentId"]);
+                    this.ClothingID = dr["ClothingID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ClothingID"]);
+                    this.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
+                    this.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
+                    this.WorkLevelID = dr["WorkLevelID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["WorkLevelID"]);
+                    this.TeamID = dr["TeamID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TeamID"]);
+                    this.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
+                    this.Temperature = dr["Temperature"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Temperature"]);
+                    this.SunExposureID = dr["SunExposureID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["SunExposureID"]);
+                    this.Latitude = dr["Latitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Latitude"]);
+                    this.RecActionIdD = dr["RecActionIdD"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RecActionIdD"]);
+                    this.RiskLevelID = dr["RiskLevelID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["RiskLevelID"]);
+                    this.LocationID = dr["LocationID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["LocationID"]);
+                    this.Longitude = dr["Longitude"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Longitude"]);
+                    this.Humidity = dr["Humidity"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Humidity"]);
+                    this.EnvironmentID = dr["EnvironmentID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EnvironmentID"]);
+                    this.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                 }
 
                 dr.Close();
@@ -271,7 +269,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Logger.Error("WorkRestConstructor", Exc.Message, Config["LogPath"]);
+                Logger.Error(Exc.Message);
             }
             finally
             {
@@ -284,7 +282,7 @@ namespace KenzenAPI.DataClasses
         #endregion Constructors
 
         #region Save
-        public ProcessResult Save()
+        public ProcessResult Save(ILogger Logger, IConfiguration Config)
         {
             ProcessResult oPR = new ProcessResult();
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
@@ -296,57 +294,57 @@ namespace KenzenAPI.DataClasses
 
                 #region Parameters
                 // parameters for WorkRest
-                cmd.Parameters.Add(new SqlParameter("@userId", SqlDbType.Int));
-                cmd.Parameters["@userId"].Value = this.userId;
+                cmd.Parameters.Add(new SqlParameter("@ClothingID", SqlDbType.Int));
+                cmd.Parameters["@ClothingID"].Value = this.ClothingID;
 
-                cmd.Parameters.Add(new SqlParameter("@sunExposureId", SqlDbType.Int));
-                cmd.Parameters["@sunExposureId"].Value = this.sunExposureId;
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = this.ID;
 
-                cmd.Parameters.Add(new SqlParameter("@latitude", SqlDbType.Money));
-                cmd.Parameters["@latitude"].Value = this.latitude;
+                cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
+                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
 
-                cmd.Parameters.Add(new SqlParameter("@wrRisklevelId", SqlDbType.Int));
-                cmd.Parameters["@wrRisklevelId"].Value = this.wrRisklevelId;
+                cmd.Parameters.Add(new SqlParameter("@WorkLevelID", SqlDbType.Int));
+                cmd.Parameters["@WorkLevelID"].Value = this.WorkLevelID;
 
-                cmd.Parameters.Add(new SqlParameter("@clothingId", SqlDbType.Int));
-                cmd.Parameters["@clothingId"].Value = this.clothingId;
+                cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
+                cmd.Parameters["@TeamID"].Value = this.TeamID;
 
-                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.VarChar, 255));
-                cmd.Parameters["@GMT"].Value = this.GMT ?? "";
+                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
+                cmd.Parameters["@GMT"].Value = this.GMT;
 
-                cmd.Parameters.Add(new SqlParameter("@workLevelId", SqlDbType.Int));
-                cmd.Parameters["@workLevelId"].Value = this.workLevelId;
+                cmd.Parameters.Add(new SqlParameter("@Temperature", SqlDbType.Money, 8));
+                cmd.Parameters["@Temperature"].Value = this.Temperature;
 
-                cmd.Parameters.Add(new SqlParameter("@utcTs", SqlDbType.VarChar, 8));
-                cmd.Parameters["@utcTs"].Value = this.utcTs ?? "";
+                cmd.Parameters.Add(new SqlParameter("@SunExposureID", SqlDbType.Int));
+                cmd.Parameters["@SunExposureID"].Value = this.SunExposureID;
 
-                cmd.Parameters.Add(new SqlParameter("@locationKey", SqlDbType.Int));
-                cmd.Parameters["@locationKey"].Value = this.locationKey;
+                cmd.Parameters.Add(new SqlParameter("@Latitude", SqlDbType.Money, 8));
+                cmd.Parameters["@Latitude"].Value = this.Latitude;
 
-                cmd.Parameters.Add(new SqlParameter("@teamId", SqlDbType.Int));
-                cmd.Parameters["@teamId"].Value = this.teamId;
+                cmd.Parameters.Add(new SqlParameter("@RecActionIdD", SqlDbType.Int));
+                cmd.Parameters["@RecActionIdD"].Value = this.RecActionIdD;
 
-                cmd.Parameters.Add(new SqlParameter("@longitude", SqlDbType.Money));
-                cmd.Parameters["@longitude"].Value = this.longitude;
+                cmd.Parameters.Add(new SqlParameter("@RiskLevelID", SqlDbType.Int));
+                cmd.Parameters["@RiskLevelID"].Value = this.RiskLevelID;
 
-                cmd.Parameters.Add(new SqlParameter("@temperature", SqlDbType.Money));
-                cmd.Parameters["@temperature"].Value = this.temperature;
+                cmd.Parameters.Add(new SqlParameter("@LocationID", SqlDbType.Int));
+                cmd.Parameters["@LocationID"].Value = this.LocationID;
 
-                cmd.Parameters.Add(new SqlParameter("@location", SqlDbType.VarChar, 255));
-                cmd.Parameters["@location"].Value = this.location ?? "";
+                cmd.Parameters.Add(new SqlParameter("@Longitude", SqlDbType.Money, 8));
+                cmd.Parameters["@Longitude"].Value = this.Longitude;
 
-                cmd.Parameters.Add(new SqlParameter("@wrRecActionId", SqlDbType.Int));
-                cmd.Parameters["@wrRecActionId"].Value = this.wrRecActionId;
+                cmd.Parameters.Add(new SqlParameter("@Humidity", SqlDbType.Money, 8));
+                cmd.Parameters["@Humidity"].Value = this.Humidity;
 
-                cmd.Parameters.Add(new SqlParameter("@humidity", SqlDbType.Money));
-                cmd.Parameters["@humidity"].Value = this.humidity;
+                cmd.Parameters.Add(new SqlParameter("@EnvironmentID", SqlDbType.Int));
+                cmd.Parameters["@EnvironmentID"].Value = this.EnvironmentID;
 
-                cmd.Parameters.Add(new SqlParameter("@environmentId", SqlDbType.Int));
-                cmd.Parameters["@environmentId"].Value = this.environmentId;
+                cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
+                cmd.Parameters["@UserID"].Value = this.UserID;
 
                 // assign output param
-                cmd.Parameters.Add(new SqlParameter("@WorkRestIDOut", SqlDbType.Int));
-                cmd.Parameters["@WorkRestIDOut"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@IDOut", SqlDbType.Int));
+                cmd.Parameters["@IDOut"].Direction = ParameterDirection.Output;
 
                 #endregion Parameters
 
@@ -354,8 +352,8 @@ namespace KenzenAPI.DataClasses
                 cmd.ExecuteNonQuery();
                 Cnxn.Close();
 
-                int iWorkRestID = Convert.ToInt32(cmd.Parameters["@WorkRestIDOut"].Value);
-                this.ID = iWorkRestID;
+                int iID = Convert.ToInt32(cmd.Parameters["@IDOut"].Value);
+                this.ID = iID;
 
                 oPR.ObjectProcessed = this;
                 oPR.Result += "Saved";
@@ -364,8 +362,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Logger.Error("WorkRestSave", Exc.Message, Config["LogPath"]);
-
+                Logger.Error(Exc.Message);
                 oPR.Exception = Exc;
                 oPR.Result += "Error";
                 return (oPR);
@@ -380,7 +377,7 @@ namespace KenzenAPI.DataClasses
         #region Delete
 
 
-        public static bool Delete(int WorkRestID, int ClientID, ILogger Logger, IConfiguration Config)
+        public static bool Delete(int ID, int ClientID, ILogger Logger, IConfiguration Config)
         {
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
@@ -389,8 +386,8 @@ namespace KenzenAPI.DataClasses
                 SqlCommand cmd = new SqlCommand("spWorkRestDelete", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@WorkRestID", SqlDbType.Int));
-                cmd.Parameters["@WorkRestID"].Value = WorkRestID;
+                cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
+                cmd.Parameters["@ID"].Value = ID;
 
                 Cnxn.Open();
                 cmd.ExecuteNonQuery();
@@ -399,7 +396,7 @@ namespace KenzenAPI.DataClasses
             }
             catch (Exception Exc)
             {
-                Logger.Error("WorkRestDelete", Exc.Message, Config["LogPath"]);
+                Logger.Error(Exc.Message);
                 return (false);
             }
             finally

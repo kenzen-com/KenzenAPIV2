@@ -14,7 +14,8 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 namespace KenzenAPI
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+ 
     public class APIRouteAuthAttribute : Attribute, Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter
     {
         private string Role = "";

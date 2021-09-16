@@ -163,7 +163,7 @@ namespace KenzenAPI.DataClasses
         #endregion Get/Sets
 
         #region Constructors
-
+        public ConnectionStatus() { }
         public ConnectionStatus(ILogger logger, IConfiguration config)
         {
             Logger = logger;

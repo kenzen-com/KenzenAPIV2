@@ -237,7 +237,8 @@ namespace KenzenAPI.Controllers
         /// </summary>
         [HttpGet]
         [Route("TeamUsers/{ClientID}/{TeamID}")]
-        [APIRouteAuth("User")]
+        [APIRouteAuth("TeamLead")]
+        [APIRouteAuth("Admin")]
         public IActionResult TeamUsers(int ClientID, int TeamID)
         {
             try
