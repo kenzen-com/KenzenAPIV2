@@ -47,7 +47,7 @@ namespace KenzenAPI.DataClasses
                     oHeartRate.StepRate_1min = dr["StepRate_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepRate_1min"]);
                     oHeartRate.StepCount_1min = dr["StepCount_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepCount_1min"]);
                     oHeartRate.HeartRateAvg5_1min = dr["HeartRateAvg5_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["HeartRateAvg5_1min"]);
-                    oHeartRate.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
+                    oHeartRate.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
                     oHeartRate.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                     oHeartRate.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
                     oHeartRate.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
@@ -92,7 +92,7 @@ namespace KenzenAPI.DataClasses
                     oHeartRate.StepRate_1min = dr["StepRate_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepRate_1min"]);
                     oHeartRate.StepCount_1min = dr["StepCount_1min"] == DBNull.Value ? 0 : Convert.ToInt32(dr["StepCount_1min"]);
                     oHeartRate.HeartRateAvg5_1min = dr["HeartRateAvg5_1min"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["HeartRateAvg5_1min"]);
-                    oHeartRate.GMT = dr["GMT"] == DBNull.Value ? "" : dr["GMT"].ToString().Trim();
+                    oHeartRate.GMT = dr["GMT"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GMT"]);
                     oHeartRate.UserID = dr["UserID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UserID"]);
                     oHeartRate.ID = dr["ID"] == DBNull.Value ? 0 : Convert.ToInt32(dr["ID"]);
                     oHeartRate.UTC = dr["UTC"] == DBNull.Value ? "" : dr["UTC"].ToString().Trim();
@@ -151,11 +151,8 @@ namespace KenzenAPI.DataClasses
 
         int _TeamID;
         int _StepRate_1min;
-        int _UserID;
-        string _UTC;
         decimal _CBTPostRateLim_1min;
         decimal _HeartRateAvg5_1min;
-        string _GMT;
         int _StepCount_1min;
 
         #endregion Vars
@@ -173,18 +170,6 @@ namespace KenzenAPI.DataClasses
             set { _StepRate_1min = value; }
         }
 
-        public int UserID
-        {
-            get { return (_UserID); }
-            set { _UserID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
-        }
-
         public decimal CBTPostRateLim_1min
         {
             get { return (_CBTPostRateLim_1min); }
@@ -195,12 +180,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_HeartRateAvg5_1min); }
             set { _HeartRateAvg5_1min = value; }
-        }
-
-        public string GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
         }
 
         public int StepCount_1min
@@ -248,8 +227,8 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@HeartRateAvg5_1min", SqlDbType.Money));
                 cmd.Parameters["@HeartRateAvg5_1min"].Value = this.HeartRateAvg5_1min;
 
-                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.VarChar, 255));
-                cmd.Parameters["@GMT"].Value = this.GMT ?? "";
+                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
+                cmd.Parameters["@GMT"].Value = this.GMT;
 
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;
@@ -318,8 +297,8 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters.Add(new SqlParameter("@HeartRateAvg5_1min", SqlDbType.Money));
                 cmd.Parameters["@HeartRateAvg5_1min"].Value = this.HeartRateAvg5_1min;
 
-                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.VarChar, 255));
-                cmd.Parameters["@GMT"].Value = this.GMT ?? "";
+                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
+                cmd.Parameters["@GMT"].Value = this.GMT;
 
                 cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
                 cmd.Parameters["@UserID"].Value = this.UserID;

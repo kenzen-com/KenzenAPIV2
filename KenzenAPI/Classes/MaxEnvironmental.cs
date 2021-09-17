@@ -99,9 +99,9 @@ namespace KenzenAPI.DataClasses
         int _ID;
         int _LocationID;
         decimal _PredictedMaxRH;
-        string _UTC;
+
         decimal _PredictedMaxTemp;
-        int _GMT;
+
 
         #endregion Vars
 
@@ -131,11 +131,6 @@ namespace KenzenAPI.DataClasses
             set { _PredictedMaxTemp = value; }
         }
 
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
-        }
 
         #endregion Get/Sets
 

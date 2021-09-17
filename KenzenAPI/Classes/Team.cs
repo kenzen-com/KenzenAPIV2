@@ -128,7 +128,7 @@ namespace KenzenAPI.DataClasses
         decimal _Longitude;
         int _ID;
         string _Name;
-        string _UTC;
+
         decimal _Latitude;
         int _TeamID;
         string _Location;
@@ -272,7 +272,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@Latitude"].Value = this.Latitude;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 // assign output param
                 cmd.Parameters.Add(new SqlParameter("@TeamIDOut", SqlDbType.Int));

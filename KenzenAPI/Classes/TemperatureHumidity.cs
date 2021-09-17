@@ -100,12 +100,12 @@ namespace KenzenAPI.DataClasses
         decimal _AmbientTemp110_1min;
         decimal _SkinRH109_1min;
         decimal _MaxTotalAcc_1min;
-        int _GMT;
+
         int _UserID;
         int _TeamID;
         int _ID;
         decimal _AmbientRH110_1min;
-        string _UTC;
+
         decimal _SkinTemp109_1min;
 
         #endregion Vars
@@ -128,12 +128,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_MaxTotalAcc_1min); }
             set { _MaxTotalAcc_1min = value; }
-        }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
         }
 
         public int UserID

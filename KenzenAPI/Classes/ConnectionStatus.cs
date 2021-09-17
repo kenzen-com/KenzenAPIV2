@@ -105,8 +105,8 @@ namespace KenzenAPI.DataClasses
         int _BatteryPercent;
         string _MacAddress;
         bool _IsCharging;
-        string _UTC;
-        int _GMT;
+
+
 
         #endregion Vars
 
@@ -148,18 +148,7 @@ namespace KenzenAPI.DataClasses
             set { _IsCharging = value; }
         }
 
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
-        }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
-        }
-
+   
         #endregion Get/Sets
 
         #region Constructors

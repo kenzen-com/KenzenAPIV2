@@ -66,7 +66,7 @@ namespace KenzenAPI.DataClasses
 
         int _UserID;
 
-        string _UTC;
+
         int _RoleID;
         int _ClientID;
 

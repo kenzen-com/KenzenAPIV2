@@ -98,8 +98,8 @@ namespace KenzenAPI.DataClasses
         int _QuestionID;
         int _ID;
         int _AnswerID;
-        string _UTC;
-        int _GMT;
+
+
         string _Response;
 
         #endregion Vars
@@ -122,12 +122,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_AnswerID); }
             set { _AnswerID = value; }
-        }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
         }
 
         public string Response

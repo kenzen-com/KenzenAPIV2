@@ -80,11 +80,11 @@ namespace KenzenAPI.DataClasses
         int _TeamID;
         string _LastName;
         string _LastUpdatedUTC;
-        int _GMT;
+
         decimal _Height;
         string _LastLoginUTC;
         string _Username;
-        string _UTC;
+
         string _EmailAddress;
         string _FirstName;
         string _Measure;
@@ -158,13 +158,6 @@ namespace KenzenAPI.DataClasses
             get { return (_LastUpdatedUTC); }
             set { _LastUpdatedUTC = value; }
         }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
-        }
-
         public decimal Height
         {
             get { return (_Height); }

@@ -103,8 +103,8 @@ namespace KenzenAPI.DataClasses
         int _UserID;
         int _AlertCounter;
         int _ID;
-        string _UTC;
-        int _GMT;
+
+
         int _TeamID;
         int _AlertStageID;
 
@@ -122,12 +122,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_AlertCounter); }
             set { _AlertCounter = value; }
-        }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
         }
 
         public int TeamID

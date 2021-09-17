@@ -102,7 +102,7 @@ namespace KenzenAPI.Classes
         string _Address;
         string _ContactPhone;
         int _ID;
-        string _UTC;
+
         int _LastEditBy;
         string _State;
         string _City;
@@ -255,6 +255,9 @@ namespace KenzenAPI.Classes
 
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int));
                 cmd.Parameters["@ID"].Value = this.ID;
+
+                cmd.Parameters.Add(new SqlParameter("@GMT", SqlDbType.Int));
+                cmd.Parameters["@GMT"].Value = this.GMT;
 
                 cmd.Parameters.Add(new SqlParameter("@LastEditBy", SqlDbType.Int));
                 cmd.Parameters["@LastEditBy"].Value = this.LastEditBy;

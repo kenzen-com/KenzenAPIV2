@@ -109,12 +109,11 @@ namespace KenzenAPI.DataClasses
         #region Vars
 
         int _ClothingID;
-        string _UTC;
+
         int _RiskLevelID;
         int _LocationID;
         decimal _Temperature;
         decimal _Humidity;
-        int _UserID;
         decimal _Longitude;
         int _TeamID;
         int _ID;
@@ -122,7 +121,7 @@ namespace KenzenAPI.DataClasses
         int _EnvironmentID;
         decimal _Latitude;
         int _WorkLevelID;
-        int _GMT;
+
         int _SunExposureID;
 
         #endregion Vars
@@ -133,12 +132,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_ClothingID); }
             set { _ClothingID = value; }
-        }
-
-        public string UTC
-        {
-            get { return (_UTC); }
-            set { _UTC = value; }
         }
 
         public int RiskLevelID
@@ -164,13 +157,7 @@ namespace KenzenAPI.DataClasses
             get { return (_Humidity); }
             set { _Humidity = value; }
         }
-
-        public int UserID
-        {
-            get { return (_UserID); }
-            set { _UserID = value; }
-        }
-
+  
         public decimal Longitude
         {
             get { return (_Longitude); }
@@ -211,12 +198,6 @@ namespace KenzenAPI.DataClasses
         {
             get { return (_WorkLevelID); }
             set { _WorkLevelID = value; }
-        }
-
-        public int GMT
-        {
-            get { return (_GMT); }
-            set { _GMT = value; }
         }
 
         public int SunExposureID
@@ -306,7 +287,7 @@ namespace KenzenAPI.DataClasses
                 cmd.Parameters["@ID"].Value = this.ID;
 
                 cmd.Parameters.Add(new SqlParameter("@UTC", SqlDbType.VarChar, 50));
-                cmd.Parameters["@UTC"].Value = this.UTC ?? "";
+                cmd.Parameters["@UTC"].Value = this.UTC ?? DateTime.Now.ToString();
 
                 cmd.Parameters.Add(new SqlParameter("@WorkLevelID", SqlDbType.Int));
                 cmd.Parameters["@WorkLevelID"].Value = this.WorkLevelID;

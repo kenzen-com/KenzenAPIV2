@@ -86,7 +86,7 @@ namespace KenzenAPI.DataClasses
 
         int _UserID;
 
-        string _UTC;
+
         bool _IsCurrent;
         string _Password;
 
