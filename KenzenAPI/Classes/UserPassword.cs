@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using KenzenAPI.Classes;
 using AzureWrapper;
+using System.Linq;
 
 namespace KenzenAPI.DataClasses
 {
@@ -111,6 +112,19 @@ namespace KenzenAPI.DataClasses
             set { _Password = value; }
         }
 
+        public bool IsExpired
+        {
+            get
+            {
+                TimeSpan ts = DateTime.Now - Convert.ToDateTime(this.UTC);
+                if (ts.Days > Convert.ToInt32(Config["PasswordExpDays"]))
+                    return true;
+                else
+                    return
+                        false;
+            }
+        }
+
         #endregion Get/Sets
 
         #region Constructors
@@ -173,6 +187,13 @@ namespace KenzenAPI.DataClasses
             SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
             try
             {
+                List<UserPassword> l = new UserPasswordCollection(ID, Logger, Config).Values.ToList();
+                UserPassword p = l.Find(q => q.Password == AzureWrapper.Crypto.HashMe(this.Password).Result);
+                if(p != null)
+                {
+                    oPR.Result = "Cannot re-use password";
+                    return (oPR);
+                }
 
                 SqlCommand cmd = new SqlCommand("spPasswordSave", Cnxn);
                 cmd.CommandType = CommandType.StoredProcedure;
