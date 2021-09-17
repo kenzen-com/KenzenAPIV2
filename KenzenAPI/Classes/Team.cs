@@ -422,5 +422,85 @@ namespace KenzenAPI.DataClasses
         }
         #endregion Save
 
+        #region Managers
+        public static ProcessResult Managers(int ClientID, ILogger Logger, IConfiguration Config)
+        {
+            ProcessResult oPR = new ProcessResult();
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            try
+            {
+                List<User> oOut = new List<User>();
+
+                User oUser = new User(Logger, Config);
+                SqlCommand cmd = new SqlCommand("spManagersFetchByClient", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ClientID", SqlDbType.Int).Value = ClientID;
+
+                Cnxn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+
+                    oOut.Add(oUser);
+
+                }
+                dr.Close();
+                Cnxn.Close();
+                oPR.ObjectProcessed = oOut;
+            }
+            catch (Exception Exc)
+            {
+                oPR.Exception = Exc;
+                Logger.Error(Exc.Message);
+            }
+
+            return oPR;
+        }
+        #endregion Users
+
+        #region AssignManager
+        public static ProcessResult AssignManager(int ClientID, int TeamID, int UserID, ILogger Logger, IConfiguration Config)
+        {
+            ProcessResult oPR = new ProcessResult();
+            SqlConnection Cnxn = new SqlConnection(Client.GetCnxnString(ClientID, Config));
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("spTeamManagerAssign", Cnxn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                #region Parameters
+                // parameters for Team
+                cmd.Parameters.Add(new SqlParameter("@TeamID", SqlDbType.Int));
+                cmd.Parameters["@TeamID"].Value = TeamID;
+
+                cmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.Int));
+                cmd.Parameters["@UserID"].Value = UserID;
+
+                #endregion Parameters
+
+                Cnxn.Open();
+                cmd.ExecuteNonQuery();
+                Cnxn.Close();
+
+                oPR.Result += "Assigned";
+                return (oPR);
+
+            }
+            catch (Exception Exc)
+            {
+                Logger.Error(Exc.Message);
+
+                oPR.Exception = Exc;
+                oPR.Result += "Error";
+                return (oPR);
+            }
+            finally
+            {
+                if (Cnxn.State == ConnectionState.Open) Cnxn.Close();
+            }
+        }
+        #endregion Save
     }
 }

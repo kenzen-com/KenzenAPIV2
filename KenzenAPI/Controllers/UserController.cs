@@ -343,5 +343,51 @@ namespace KenzenAPI.Controllers
         }
         #endregion TeamUsers
 
+
+
+        #region TeamManagers
+        /// <summary>
+        ///  Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamManagers by Team
+        /// </summary>
+        [HttpGet]
+        [Route("TeamManagers/{ClientID}")]
+        [APIRouteAuth("TeamLead")]
+        [APIRouteAuth("Admin")]
+        public IActionResult TeamManagers(int ClientID, int TeamID)
+        {
+            try
+            {
+                ProcessResult oPR = Team.Managers(ClientID, Logger, Config);
+                List<User> u = (List<User>)oPR.ObjectProcessed;
+                return Ok(u);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion TeamManagers
+
+        #region TeamManager
+        /// <summary>
+        ///  Accepts a TeamManager object | Assigns a Manager to a Team
+        /// </summary>
+        [HttpPost]
+        [Route("TeamManager")]
+        [APIRouteAuth("CompanyAdmin")]
+        public IActionResult TeamManager(User TeamManager)
+        {
+            try
+            {
+                ProcessResult oPR = Team.AssignManager(TeamManager.ClientID, TeamManager.TeamID, TeamManager.ID, Logger, Config);
+                return Ok(oPR.Result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion TeamManagers
+
     }
 }

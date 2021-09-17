@@ -150,6 +150,16 @@
              Accepts a TeamUser object | Assigns a User to a Team
             </summary>
         </member>
+        <member name="M:KenzenAPI.Controllers.UserController.TeamManagers(System.Int32,System.Int32)">
+            <summary>
+             Accepts a ClientID and a TeamID in the Route URL | Fetches a list of TeamManagers by Team
+            </summary>
+        </member>
+        <member name="M:KenzenAPI.Controllers.UserController.TeamManager(KenzenAPI.DataClasses.User)">
+            <summary>
+             Accepts a TeamManager object | Assigns a Manager to a Team
+            </summary>
+        </member>
         <member name="T:KenzenAPI.Log">
             <summary>
             Logs errors, events
